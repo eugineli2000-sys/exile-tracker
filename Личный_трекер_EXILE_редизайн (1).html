@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Личный трекер</title>
+<style>
+:root{
+  --bg:#07080c;
+  --bg-2:#0b0d13;
+  --panel:#0d1017;
+  --panel-2:#11151e;
+  --panel-3:#151a24;
+  --text:#eef1f7;
+  --muted:#7f8998;
+  --line:#252b38;
+  --line-soft:#1a202b;
+  --purple:#7c4dff;
+  --purple-2:#a66cff;
+  --blue:#2e9cff;
+  --cyan:#25d7ff;
+  --green:#23d69b;
+  --yellow:#e8bd45;
+  --red:#ff4f72;
+  --orange:#ff8b3d;
+  --shadow:0 10px 28px rgba(0,0,0,.22);
+  --radius:14px;
+  --header-h:74px;
+}
+
+html{color-scheme:dark}
+html.light{
+  --bg:#eef1f6;
+  --bg-2:#e5e9f1;
+  --panel:#ffffff;
+  --panel-2:#f7f8fb;
+  --panel-3:#eef1f6;
+  --text:#151a24;
+  --muted:#667085;
+  --line:#d7dce5;
+  --line-soft:#e8ebf1;
+  --purple:#6941e8;
+  --purple-2:#7c4dff;
+  --blue:#1976d2;
+  --cyan:#009fc1;
+  --green:#099268;
+  --yellow:#b78500;
+  --red:#d9365e;
+  --orange:#d96a16;
+  --shadow:0 8px 22px rgba(32,42,60,.08);
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(124,77,255,.09),transparent 28rem),
+    radial-gradient(circle at 90% 10%,rgba(37,215,255,.055),transparent 26rem),
+    var(--bg);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.45;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+::selection{background:rgba(124,77,255,.35)}
+.app{min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(7,8,12,.96);
+  border-bottom:1px solid var(--line);
+}
+html.light .topbar{background:rgba(255,255,255,.96)}
+
+.header{
+  width:min(1500px,100%);
+  min-height:var(--header-h);
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;flex:0 0 42px;
+  display:grid;place-items:center;
+  border:1px solid rgba(124,77,255,.65);
+  border-radius:11px;
+  color:#fff;
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:-1px;
+  background:linear-gradient(135deg,#25144f,#101522 62%);
+  box-shadow:inset 0 0 20px rgba(124,77,255,.14);
+}
+.brand h1{
+  margin:0;
+  font-size:20px;
+  line-height:1;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  padding:8px 11px;
+  border-radius:9px;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.btn:hover{border-color:#3b4352;background:var(--panel-3)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(135deg,#7447f4,#5930c7);color:#fff;border-color:#8058f5}
+.btn.danger{color:#fff;background:#8d2742;border-color:#a93350}
+.btn.small{padding:6px 9px;font-size:12px}
+
+.theme-btn{
+  min-width:38px;
+  padding-inline:9px;
+  font-size:16px;
+}
+
+.nav{
+  width:min(1500px,100%);
+  margin:auto;
+  padding:0 14px 10px;
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
+}
+.nav::-webkit-scrollbar{height:5px}
+.nav::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.tab{
+  position:relative;
+  border:0;
+  background:transparent;
+  padding:9px 12px;
+  border-radius:8px;
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  transition:color .15s,background .15s;
+}
+.tab:hover{color:var(--text);background:var(--panel-2)}
+.tab.active{background:rgba(124,77,255,.14);color:var(--purple-2)}
+.tab.active::after{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;bottom:-10px;
+  height:2px;
+  background:var(--purple);
+  border-radius:2px;
+}
+
+main{
+  width:min(1500px,100%);
+  margin:auto;
+  padding:18px 20px 28px;
+}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:panelIn .14s ease-out}
+@keyframes panelIn{from{opacity:.65;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.card{
+  grid-column:span 12;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  contain:layout paint;
+}
+.card::before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(var(--purple),transparent 70%);
+  opacity:.7;
+}
+.card.half{grid-column:span 6}
+.card.third{grid-column:span 4}
+.card h2,.card h3{
+  margin:0 0 13px;
+  font-size:15px;
+  letter-spacing:.02em;
+}
+.card h2::before{content:"// ";color:var(--purple-2);font-family:ui-monospace,monospace}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar>*{margin:0}
+.toolbar .input{flex:1 1 180px}
+
+.field{display:grid;gap:6px;margin-bottom:10px}
+.field label{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.input,.textarea,.select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 10px;
+  background:var(--bg-2);
+  color:var(--text);
+  outline:none;
+}
+.input:focus,.textarea:focus,.select:focus{
+  border-color:rgba(124,77,255,.75);
+  box-shadow:0 0 0 2px rgba(124,77,255,.1);
+}
+.textarea{min-height:105px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form-grid .full{grid-column:1/-1}
+
+.list{display:grid;gap:8px}
+.item{
+  border:1px solid var(--line-soft);
+  border-left:2px solid #303746;
+  border-radius:9px;
+  padding:10px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  background:rgba(255,255,255,.012);
+}
+.item:hover{border-left-color:var(--purple)}
+.item-main{flex:1;min-width:0}
+.item-title{font-weight:750;margin-bottom:3px}
+.item-meta{font-size:11px;color:var(--muted)}
+.item-actions{display:flex;gap:5px;flex-wrap:wrap}
+.checkbox-row{display:flex;gap:8px;align-items:flex-start}
+.checkbox-row input{margin-top:3px;width:17px;height:17px;accent-color:var(--purple)}
+.done{text-decoration:line-through;color:var(--muted)}
+.empty{
+  padding:24px 16px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:9px;
+  background:rgba(255,255,255,.01);
+}
+
+.progress{
+  height:8px;
+  border-radius:99px;
+  background:var(--panel-3);
+  overflow:hidden;
+  border:1px solid var(--line-soft);
+}
+.progress>div{
+  height:100%;
+  background:linear-gradient(90deg,var(--purple),var(--blue));
+  transition:width .2s ease;
+}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stat{
+  padding:11px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:var(--bg-2);
+}
+.stat b{display:block;font-size:21px;margin-top:3px}
+.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+.table-wrap{overflow:auto;border:1px solid var(--line-soft);border-radius:9px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--bg-2)}
+.amount.income{color:var(--green);font-weight:800}
+.amount.expense{color:var(--red);font-weight:800}
+
+
+.goal-dashboard{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:16px;align-items:center}
+.goal-chart{display:grid;place-items:center;position:relative;min-height:205px}
+.goal-chart svg{width:190px;height:190px;transform:rotate(-90deg);overflow:visible}
+.goal-chart-track{fill:none;stroke:var(--panel-3);stroke-width:18}
+.goal-chart-segment{fill:none;stroke:var(--purple);stroke-width:18;stroke-linecap:butt;transition:stroke .15s,opacity .15s}
+.goal-chart-segment.done{stroke:var(--purple-2)}
+.goal-chart-center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.goal-chart-center-inner{text-align:center}
+.goal-chart-percent{display:block;font-size:29px;line-height:1;font-weight:850}
+.goal-chart-caption{display:block;margin-top:5px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.goal-legend{display:grid;gap:8px}
+.goal-legend-row{display:flex;justify-content:space-between;gap:10px;padding:8px 9px;border:1px solid var(--line-soft);border-radius:8px;background:var(--bg-2);font-size:11px}
+.goal-legend-row b{font-size:13px}
+.goal-type{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:99px;background:rgba(124,77,255,.1);color:var(--purple-2);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.goal-day-progress{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px}
+.goal-day-dot{width:7px;height:7px;border-radius:50%;background:var(--panel-3);border:1px solid var(--line)}
+.goal-day-dot.done{background:var(--purple-2);border-color:var(--purple-2)}
+.goal-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.goal-actions .btn{white-space:nowrap}
+.goal-series-note{font-size:10px;color:var(--muted);margin-top:5px}
+@media(max-width:900px){.goal-dashboard{grid-template-columns:1fr}.goal-chart{min-height:190px}}
+
+.media-card{display:grid;grid-template-columns:220px 1fr;gap:12px}
+.media-card img{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  border-radius:8px;border:1px solid var(--line);
+  display:block;
+}
+.badge{
+  display:inline-flex;align-items:center;
+  padding:3px 7px;border-radius:99px;
+  font-size:10px;font-weight:800;
+  background:rgba(124,77,255,.12);color:var(--purple-2);
+  margin-right:4px;
+}
+.rating{font-size:16px;letter-spacing:1px;color:var(--yellow)}
+.note-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.footer-note{font-size:11px;color:var(--muted);margin-top:9px}
+.kbd{font-family:ui-monospace,monospace;background:var(--panel-3);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+
+@media(max-width:1000px){
+  .card.half,.card.third{grid-column:span 12}
+  .media-card{grid-template-columns:190px 1fr}
+}
+@media(max-width:700px){
+  .header{padding:10px 12px;align-items:flex-start}
+  .brand h1{font-size:17px}
+  .brand p{display:none}
+  .actions{max-width:190px}
+  .actions .btn{font-size:11px}
+  main{padding:12px}
+  .form-grid,.note-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .media-card{grid-template-columns:1fr}
+  .tab.active::after{bottom:-7px}
+  .nav{padding-bottom:7px}
+}
+@media(max-width:430px){
+  .header{display:block}
+  .actions{margin-top:9px;max-width:none;justify-content:flex-start}
+  .stats{grid-template-columns:1fr 1fr}
+  .card{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">EX</div>
+        <div>
+          <h1>Личный трекер</h1>
+          <p>Дисциплина · прогресс · личная система</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn small" id="exportBtn">Экспорт данных</button>
+        <button class="btn small" id="importBtn">Импорт</button>
+         <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Сменить тему" title="Сменить тему">☼</button>
+        <input type="file" id="importFile" accept=".json" hidden>
+        <button class="btn small danger" id="resetBtn">Сбросить всё</button>
+      </div>
+    </div>
+    <div class="nav" id="nav">
+      <button class="tab active" data-tab="monthTasks">Месяц: задачи</button>
+      <button class="tab" data-tab="weekend">Выходные: 3 дня</button>
+      <button class="tab" data-tab="monthlyGoals">Цели: месяц</button>
+       <button class="tab" data-tab="yearlyGoals">Цели: год</button>
+      <button class="tab" data-tab="finance">Финансы</button>
+      <button class="tab" data-tab="diary">Дневник</button>
+      <button class="tab" data-tab="media">Фильмы / сериалы</button>
+      <button class="tab" data-tab="notes">Заметки + YouTube</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="tab-panel active" id="panel-monthTasks">
+      <div class="grid">
+        <div class="card half">
+          <h2>Общие задачи на месяц</h2>
+          <div class="toolbar">
+            <input class="input" id="monthTaskText" placeholder="Новая задача">
+             <select class="select" id="monthTaskType" style="max-width:260px"><option value="once">Обычная задача</option><option value="daily31">Задача на 31 день</option></select>
+            <button class="btn primary" id="addMonthTask">Добавить</button>
+          </div>
+          <div class="field"><label>Месяц</label><input class="input" type="month" id="taskMonth"></div>
+          <div id="monthTasksList" class="list"></div>
+        </div>
+        <div class="card half">
+          <h2>Прогресс месяца</h2>
+          <div class="stats">
+            <div class="stat"><span>Всего</span><b id="mtTotal">0</b></div>
+            <div class="stat"><span>Готово</span><b id="mtDone">0</b></div>
+            <div class="stat"><span>Осталось</span><b id="mtLeft">0</b></div>
+            <div class="stat"><span>Процент</span><b id="mtPct">0%</b></div>
+          </div>
+          <div style="margin-top:16px" class="progress"><div id="mtBar" style="width:0%"></div></div>
+          <p class="footer-note">Задачи сохраняются отдельно для выбранного месяца.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-weekend">
+      <div class="grid">
+        <div class="card half">
+          <h2>3 дня выходных</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата начала</label><input class="input" type="date" id="weekendStart"></div>
+            <div class="field"><label>День</label><select class="select" id="weekendDay"><option value="0">День 1</option><option value="1">День 2</option><option value="2">День 3</option></select></div>
+            <div class="field full"><label>Задача / цель</label><input class="input" id="weekendTaskText" placeholder="Например: закончить книгу"></div>
+          </div>
+          <button class="btn primary" id="addWeekend">Добавить</button>
+          <div style="margin-top:14px" id="weekendList" class="list"></div>
+        </div>
+        <div class="card half">
+          <h2>Идея для выходных</h2>
+          <p style="color:var(--muted)">Раздел рассчитан на короткий трёхдневный цикл. Можно менять дату старта, чтобы вести любой набор из трёх дней.</p>
+          <div id="weekendSummary"></div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="tab-panel" id="panel-monthlyGoals">
+      <div class="grid">
+        <div class="card half">
+          <h2>Цели на месяц</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Цель</label>
+              <input class="input" id="monthlyGoalText" placeholder="Например: заниматься каждый день">
+            </div>
+            <div class="field">
+              <label>Тип цели</label>
+              <select class="select" id="monthlyGoalType">
+                <option value="once">Обычная задача — закрыть один раз</option>
+                <option value="daily31">Задача на 31 день — отмечать каждый день</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Дата старта</label>
+              <input class="input" type="date" id="monthlyGoalStart">
+            </div>
+          </div>
+          <button class="btn primary" id="addMonthlyGoal">Добавить цель</button>
+          <p class="footer-note">Обычная цель закрывается одной кнопкой. У цели на 31 день каждый отмеченный день закрашивает одну маленькую часть круга.</p>
+          <div id="monthlyGoalsList" class="list"></div>
+        </div>
+        <div class="card half">
+          <h2>Общий прогресс месяца</h2>
+          <div class="goal-dashboard">
+            <div class="goal-chart" id="monthlyGoalChart"></div>
+            <div class="goal-legend">
+              <div class="goal-legend-row"><span>Выполнено</span><b id="monthlyDone">0</b></div>
+              <div class="goal-legend-row"><span>Всего частей</span><b id="monthlyTotal">0</b></div>
+              <div class="goal-legend-row"><span>Осталось</span><b id="monthlyLeft">0</b></div>
+              <div class="goal-legend-row"><span>Прогресс</span><b id="monthlyPct">0%</b></div>
+            </div>
+          </div>
+          <p class="footer-note">Одна обычная цель = 1 часть. Одна 31-дневная цель = 31 частей. Диаграмма обновляется сразу после закрытия.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-yearlyGoals">
+      <div class="grid">
+        <div class="card half">
+          <h2>Цели на год</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Цель</label>
+              <input class="input" id="yearlyGoalText" placeholder="Например: создать финансовую подушку">
+            </div>
+            <div class="field">
+              <label>Тип цели</label>
+              <select class="select" id="yearlyGoalType">
+                <option value="once">Обычная задача — закрыть один раз</option>
+                <option value="daily31">Длительная цель на 31 день — отмечать каждый день</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Дата старта</label>
+              <input class="input" type="date" id="yearlyGoalStart">
+            </div>
+          </div>
+          <button class="btn primary" id="addYearlyGoal">Добавить цель</button>
+          <p class="footer-note">Закрытие обычной цели закрашивает одну часть общей диаграммы. Длительная цель добавляет по одной части за каждый выполненный день.</p>
+          <div id="yearlyGoalsList" class="list"></div>
+        </div>
+        <div class="card half">
+          <h2>Общий прогресс года</h2>
+          <div class="goal-dashboard">
+            <div class="goal-chart" id="yearlyGoalChart"></div>
+            <div class="goal-legend">
+              <div class="goal-legend-row"><span>Выполнено</span><b id="yearlyDone">0</b></div>
+              <div class="goal-legend-row"><span>Всего частей</span><b id="yearlyTotal">0</b></div>
+              <div class="goal-legend-row"><span>Осталось</span><b id="yearlyLeft">0</b></div>
+              <div class="goal-legend-row"><span>Прогресс</span><b id="yearlyPct">0%</b></div>
+            </div>
+          </div>
+          <p class="footer-note">Круг синхронизирован с целями и изменяется автоматически при каждом выполнении.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-finance">
+      <div class="grid">
+        <div class="card half">
+          <h2>Добавить финансовую запись</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата</label><input class="input" type="date" id="finDate"></div>
+            <div class="field"><label>Тип</label><select class="select" id="finType"><option value="expense">Расход</option><option value="income">Доход</option></select></div>
+            <div class="field"><label>Сумма</label><input class="input" type="number" step="0.01" id="finAmount" placeholder="0"></div>
+            <div class="field"><label>Категория</label><input class="input" id="finCategory" placeholder="Еда, транспорт..."></div>
+            <div class="field full"><label>Комментарий</label><input class="input" id="finComment" placeholder="Что это было?"></div>
+          </div>
+          <button class="btn primary" id="addFinance">Добавить запись</button>
+        </div>
+        <div class="card half">
+          <h2>Сводка</h2>
+          <div class="stats">
+            <div class="stat"><span>Доходы</span><b id="finIncome">0</b></div>
+            <div class="stat"><span>Расходы</span><b id="finExpense">0</b></div>
+            <div class="stat"><span>Баланс</span><b id="finBalance">0</b></div>
+            <div class="stat"><span>Записей</span><b id="finCount">0</b></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Журнал финансов</h2>
+          <div class="table-wrap"><table><thead><tr><th>Дата</th><th>Тип</th><th>Категория</th><th>Комментарий</th><th>Сумма</th><th></th></tr></thead><tbody id="financeTable"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-diary">
+      <div class="grid">
+        <div class="card half">
+          <h2>Новая запись в дневник</h2>
+          <div class="field"><label>Дата</label><input class="input" type="date" id="diaryDate"></div>
+          <div class="field"><label>Заголовок</label><input class="input" id="diaryTitle" placeholder="Как прошёл день?"></div>
+          <div class="field"><label>Текст</label><textarea class="textarea" id="diaryText" placeholder="Мысли, события, выводы..."></textarea></div>
+          <button class="btn primary" id="addDiary">Сохранить запись</button>
+        </div>
+        <div class="card half">
+          <h2>История</h2>
+          <div id="diaryList" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-media">
+      <div class="grid">
+        <div class="card">
+          <h2>Фильмы и сериалы</h2>
+          <div class="form-grid">
+            <div class="field"><label>Название</label><input class="input" id="mediaTitle" placeholder="Название фильма / сериала"></div>
+            <div class="field"><label>Тип</label><select class="select" id="mediaType"><option>Фильм</option><option>Сериал</option></select></div>
+            <div class="field"><label>Рейтинг 0–10</label><input class="input" type="number" min="0" max="10" step="0.1" id="mediaRating" placeholder="8.5"></div>
+            <div class="field"><label>Дата просмотра</label><input class="input" type="date" id="mediaDate"></div>
+            <div class="field full"><label>Что запомнилось</label><textarea class="textarea" id="mediaMemorable" placeholder="Атмосфера, сцены, персонажи, мысли..."></textarea></div>
+            <div class="field full"><label>Краткий пересказ</label><textarea class="textarea" id="mediaSummary" placeholder="Перескажи сюжет своими словами"></textarea></div>
+          </div>
+          <button class="btn primary" id="addMedia">Добавить</button>
+        </div>
+        <div class="card">
+          <div class="toolbar"><h2 style="margin:0">Список просмотров</h2><select class="select" id="mediaFilter" style="width:auto"><option value="all">Все</option><option value="Фильм">Фильмы</option><option value="Сериал">Сериалы</option></select></div>
+          <div id="mediaList" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-notes">
+      <div class="grid">
+        <div class="card">
+          <h2>Новая заметка</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата</label><input class="input" type="date" id="noteDate"></div>
+            <div class="field"><label>Название</label><input class="input" id="noteTitle" placeholder="Название заметки"></div>
+            <div class="field full"><label>Текст заметки</label><textarea class="textarea" id="noteText" placeholder="Полезная мысль, идея, ссылка, конспект..."></textarea></div>
+            <div class="field full"><label>YouTube ссылка (необязательно)</label><input class="input" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
+          </div>
+          <button class="btn primary" id="addNote">Добавить заметку</button>
+          <p class="footer-note">После добавления YouTube-ссылки приложение автоматически определит ID ролика, покажет превью и попытается получить название и автора. Полный текст видео без внешнего API браузер надёжно извлечь не может, поэтому для подробного конспекта есть отдельное поле справа.</p>
+        </div>
+        <div class="card">
+          <h2>Заметки</h2>
+          <div id="notesList" class="list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+
+// Theme: сохраняется отдельно от данных трекера.
+(function initTheme(){
+  const saved = localStorage.getItem('personalTracker_theme');
+  const dark = saved ? saved === 'dark' : true;
+  document.documentElement.classList.toggle('light', !dark);
+  const btn = document.getElementById('themeBtn');
+  if(btn){
+    btn.textContent = dark ? '☼' : '☾';
+    btn.title = dark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему';
+    btn.setAttribute('aria-label', btn.title);
+    btn.onclick = () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('personalTracker_theme', isLight ? 'light' : 'dark');
+      btn.textContent = isLight ? '☾' : '☼';
+      btn.title = isLight ? 'Переключить на тёмную тему' : 'Переключить на светлую тему';
+      btn.setAttribute('aria-label', btn.title);
+    };
+  }
+})();
+
+
+const KEY='personalTracker_v1';
+const state = JSON.parse(localStorage.getItem(KEY) || JSON.stringify({
+  monthTasks:[], weekend:[], monthlyGoals:[], yearlyGoals:[], finances:[], diary:[], media:[], notes:[]
+}));
+
+const $ = id => document.getElementById(id);
+const today = () => new Date().toISOString().slice(0,10);
+const monthNow = () => new Date().toISOString().slice(0,7);
+function save(){localStorage.setItem(KEY,JSON.stringify(state)); renderAll();}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function money(n){return Number(n||0).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtDate(s){if(!s)return ''; const [y,m,d]=s.split('-'); return `${d}.${m}.${y}`}
+
+function remove(type,id){state[type]=state[type].filter(x=>x.id!==id);save()}
+function toggle(type,id,field='done'){const x=state[type].find(x=>x.id===id);if(x){x[field]=!x[field];save()}}
+
+function renderMonthTasks(){
+  const month=$('taskMonth').value||monthNow();
+  const items=state.monthTasks.filter(x=>x.month===month);
+  $('monthTasksList').innerHTML=items.length?items.map(x=>{
+    const series=x.type==='daily31';
+    const doneToday=series&&Array.isArray(x.completedDays)&&x.completedDays.includes(today());
+    const done=series?(Array.isArray(x.completedDays)?x.completedDays.length:0):(x.done?1:0);
+    return `<div class="item">
+      <div class="checkbox-row">
+        ${series
+          ? `<input type="checkbox" ${doneToday?'checked':''} data-action="month-day" data-type="monthTasks" data-id="${x.id}">`
+          : `<input type="checkbox" ${x.done?'checked':''} data-action="toggle" data-type="monthTasks" data-id="${x.id}">`}
+      </div>
+      <div class="item-main">
+        <div class="item-title ${x.done&&!series?'done':''}">${esc(x.text)} <span class="goal-type">${series?'31 дней':'1 раз'}</span></div>
+        <div class="item-meta">${series?`Выполнено дней: ${done}/31 · сегодня ${doneToday?'закрыто':'не закрыто'}`:`Месяц: ${month}`}</div>
+        ${series?`<div class="progress" style="margin-top:7px"><div style="width:${Math.round(done/31*100)}%"></div></div>`:''}
+      </div>
+      <div class="item-actions">
+        <button class="btn small" data-action="delete" data-type="monthTasks" data-id="${x.id}">Удалить</button>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty">Пока нет задач за этот месяц.</div>`;
+  const done=items.filter(x=>x.type==='daily31'?Array.isArray(x.completedDays)&&x.completedDays.includes(today()):x.done).length;
+  const total=items.length;
+  const pct=total?Math.round(done/total*100):0;
+  $('mtTotal').textContent=total;$('mtDone').textContent=done;$('mtLeft').textContent=total-done;$('mtPct').textContent=pct+'%';$('mtBar').style.width=pct+'%';
+}
+
+function weekendDates(start){
+ const d=new Date(start+'T12:00:00'); return [0,1,2].map(i=>{const x=new Date(d);x.setDate(x.getDate()+i);return x.toISOString().slice(0,10)})
+}
+function renderWeekend(){
+ const start=$('weekendStart').value||today(); const dates=weekendDates(start);
+ const items=state.weekend.filter(x=>x.start===start);
+ $('weekendList').innerHTML=items.length?items.map(x=>`<div class="item"><div class="checkbox-row"><input type="checkbox" ${x.done?'checked':''} data-action="toggle" data-type="weekend" data-id="${x.id}"></div><div class="item-main"><div class="item-title ${x.done?'done':''}">${esc(x.text)}</div><div class="item-meta">${dates[x.day]} · День ${x.day+1}</div></div><div class="item-actions"><button class="btn small" data-action="delete" data-type="weekend" data-id="${x.id}">Удалить</button></div></div>`).join(''):`<div class="empty">Добавь несколько задач для трёх дней.</div>`;
+ $('weekendSummary').innerHTML=`<div class="stats"><div class="stat"><span>День 1</span><b>${items.filter(x=>x.day===0&&x.done).length}/${items.filter(x=>x.day===0).length}</b></div><div class="stat"><span>День 2</span><b>${items.filter(x=>x.day===1&&x.done).length}/${items.filter(x=>x.day===1).length}</b></div><div class="stat"><span>День 3</span><b>${items.filter(x=>x.day===2&&x.done).length}/${items.filter(x=>x.day===2).length}</b></div><div class="stat"><span>Всего</span><b>${items.filter(x=>x.done).length}/${items.length}</b></div></div>`;
+}
+
+function goalDoneUnits(x){
+  if(x.type==='daily31'){
+    return Array.isArray(x.completedDays)?x.completedDays.length:0;
+  }
+  return x.done?1:0;
+}
+function goalTotalUnits(x){
+  if(x.type==='daily31')return 31;
+  if(x.type==='daily31')return 31;
+  return 1;
+}
+function isGoalDayDone(x,date){
+  return Array.isArray(x.completedDays)&&x.completedDays.includes(date);
+}
+function goalDayList(x,count){
+  const start=x.startDate||today();
+  const base=new Date(start+'T12:00:00');
+  const out=[];
+  for(let i=0;i<count;i++){
+    const d=new Date(base);
+    d.setDate(d.getDate()+i);
+    out.push(d.toISOString().slice(0,10));
+  }
+  return out;
+}
+function goalChart(containerId,items){
+  const el=$(containerId);
+  if(!el)return;
+  const segments=[];
+  items.forEach(x=>{
+    if(x.type==='daily31'){
+      goalDayList(x,31).forEach(date=>segments.push({done:isGoalDayDone(x,date)}));
+    }else if(x.type==='daily31'){
+      goalDayList(x,365).forEach(date=>segments.push({done:isGoalDayDone(x,date)}));
+    }else{
+      segments.push({done:!!x.done});
+    }
+  });
+  const total=segments.length,done=segments.filter(x=>x.done).length,pct=total?Math.round(done/total*100):0;
+  if(!total){
+    el.innerHTML='<div class="goal-chart-center"><div class="goal-chart-center-inner"><span class="goal-chart-percent">0%</span><span class="goal-chart-caption">нет целей</span></div></div>';
+    return;
+  }
+  const cx=100,cy=100,r=72,circ=2*Math.PI*r;
+  const seg=Math.max(.35,circ/total-Math.min(1.6,circ/total*.12));
+  const parts=segments.map((x,i)=>{
+    const off=-(i*(circ/total));
+    return `<circle class="goal-chart-segment ${x.done?'done':''}" cx="${cx}" cy="${cy}" r="${r}" stroke-dasharray="${seg} ${circ-seg}" stroke-dashoffset="${off}"></circle>`;
+  }).join('');
+  el.innerHTML=`<svg viewBox="0 0 200 200" role="img" aria-label="Прогресс ${pct}%">
+    <circle class="goal-chart-track" cx="${cx}" cy="${cy}" r="${r}"></circle>${parts}</svg>
+    <div class="goal-chart-center"><div class="goal-chart-center-inner">
+      <span class="goal-chart-percent">${pct}%</span><span class="goal-chart-caption">${done} / ${total} частей</span>
+    </div></div>`;
+}
+function renderGoals(){
+  const renderList=(items,listId,emptyText)=>{
+    const type= listId==='monthlyGoalsList'?'monthlyGoals':'yearlyGoals';
+    $(listId).innerHTML=items.length?items.map(x=>{
+      const series=x.type==='daily31';
+      const max=31;
+      const done=goalDoneUnits(x),total=goalTotalUnits(x),pct=Math.round(done/total*100);
+      const todayDone=series&&isGoalDayDone(x,today());
+      const dots=series&&x.type==='daily31'
+        ? `<div class="goal-day-progress">${goalDayList(x,31).map(d=>`<span class="goal-day-dot ${isGoalDayDone(x,d)?'done':''}" title="${fmtDate(d)}"></span>`).join('')}</div>`:'';
+      return `<div class="item">
+        <div class="item-main">
+          <div class="item-title ${x.done&&!series?'done':''}">${esc(x.text)} <span class="goal-type">${series?(x.type==='daily31'?'31 дней':'365 дней'):'1 раз'}</span></div>
+          <div class="item-meta">${series?`Прогресс: ${done}/${total} · старт ${fmtDate(x.startDate||today())}`:(x.done?'Цель закрыта':'Цель ещё не закрыта')}</div>
+          ${series?`<div class="progress" style="margin-top:8px"><div style="width:${pct}%"></div></div>
+            <div class="goal-series-note">Отмечено ${done} из ${total} дней</div>
+            <div class="goal-actions" style="margin-top:8px">
+              <button class="btn small primary" data-action="goal-day" data-type="${type}" data-id="${x.id}" ${todayDone?'disabled':''}>${todayDone?'Сегодня выполнено':'Закрыть сегодня'}</button>
+              ${todayDone?`<button class="btn small" data-action="goal-day-undo" data-type="${type}" data-id="${x.id}">Отменить сегодня</button>`:''}
+            </div>${dots}`
+          :`<div class="goal-actions" style="margin-top:8px">
+              <button class="btn small primary" data-action="goal-once" data-type="${type}" data-id="${x.id}" ${x.done?'disabled':''}>${x.done?'Выполнено':'Закрыть задачу'}</button>
+              ${x.done?`<button class="btn small" data-action="goal-once-undo" data-type="${type}" data-id="${x.id}">Вернуть</button>`:''}
+            </div>`}
+        </div>
+        <div class="item-actions"><button class="btn small" data-action="delete" data-type="${type}" data-id="${x.id}">Удалить</button></div>
+      </div>`;
+    }).join(''):`<div class="empty">${emptyText}</div>`;
+  };
+
+  renderList(state.monthlyGoals,'monthlyGoalsList','Нет целей на месяц.');
+  renderList(state.yearlyGoals,'yearlyGoalsList','Нет целей на год.');
+
+  const mdone=state.monthlyGoals.reduce((n,x)=>n+goalDoneUnits(x),0);
+  const mtotal=state.monthlyGoals.reduce((n,x)=>n+goalTotalUnits(x),0);
+  const ydone=state.yearlyGoals.reduce((n,x)=>n+goalDoneUnits(x),0);
+  const ytotal=state.yearlyGoals.reduce((n,x)=>n+goalTotalUnits(x),0);
+
+  $('monthlyDone').textContent=mdone;
+  $('monthlyTotal').textContent=mtotal;
+  $('monthlyLeft').textContent=Math.max(0,mtotal-mdone);
+  $('monthlyPct').textContent=(mtotal?Math.round(mdone/mtotal*100):0)+'%';
+
+  $('yearlyDone').textContent=ydone;
+  $('yearlyTotal').textContent=ytotal;
+  $('yearlyLeft').textContent=Math.max(0,ytotal-ydone);
+  $('yearlyPct').textContent=(ytotal?Math.round(ydone/ytotal*100):0)+'%';
+
+  goalChart('monthlyGoalChart',state.monthlyGoals);
+  goalChart('yearlyGoalChart',state.yearlyGoals);
+}
+
+function renderFinance(){
+ const inc=state.finances.filter(x=>x.type==='income').reduce((a,x)=>a+Number(x.amount),0);
+ const exp=state.finances.filter(x=>x.type==='expense').reduce((a,x)=>a+Number(x.amount),0);
+ $('finIncome').textContent=money(inc);$('finExpense').textContent=money(exp);$('finBalance').textContent=money(inc-exp);$('finCount').textContent=state.finances.length;
+ $('financeTable').innerHTML=state.finances.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${x.type==='income'?'Доход':'Расход'}</td><td>${esc(x.category)}</td><td>${esc(x.comment)}</td><td class="amount ${x.type}">${x.type==='income'?'+':'-'}${money(x.amount)}</td><td><button class="btn small" data-action="delete" data-type="finances" data-id="${x.id}">Удалить</button></td></tr>`).join('') || `<tr><td colspan="6" class="empty">Нет финансовых записей.</td></tr>`;
+}
+
+function renderDiary(){
+ $('diaryList').innerHTML=state.diary.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="item-main"><div class="item-title">${esc(x.title||'Запись')} <span class="badge">${fmtDate(x.date)}</span></div><div style="white-space:pre-wrap">${esc(x.text)}</div></div><div class="item-actions"><button class="btn small" data-action="delete" data-type="diary" data-id="${x.id}">Удалить</button></div></div>`).join('') || `<div class="empty">Пока нет записей дневника.</div>`;
+}
+
+function stars(r){const n=Math.round(Number(r||0)/2);return '★'.repeat(n)+'☆'.repeat(5-n)}
+function renderMedia(){
+ const f=$('mediaFilter').value; const items=state.media.filter(x=>f==='all'||x.type===f).slice().sort((a,b)=>b.date.localeCompare(a.date));
+ $('mediaList').innerHTML=items.length?items.map(x=>`<div class="item"><div class="item-main">
+ <div class="item-title">${esc(x.title)} <span class="badge">${x.type}</span></div>
+ <div class="item-meta">${fmtDate(x.date)} · рейтинг ${Number(x.rating||0).toFixed(1)}/10 <span class="rating">${stars(x.rating)}</span></div>
+ <div style="margin-top:8px"><b>Что запомнилось:</b><div style="white-space:pre-wrap">${esc(x.memorable||'—')}</div></div>
+ <div style="margin-top:8px"><b>Краткий пересказ:</b><div style="white-space:pre-wrap">${esc(x.summary||'—')}</div></div>
+ </div><div class="item-actions"><button class="btn small" data-action="delete" data-type="media" data-id="${x.id}">Удалить</button></div></div>`).join(''):`<div class="empty">Нет записей.</div>`;
+}
+
+function youtubeId(url){
+ try{
+  const u=new URL(url);
+  if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+  if(u.hostname.includes('youtube.com')){
+    if(u.pathname==='/watch') return u.searchParams.get('v');
+    const parts=u.pathname.split('/').filter(Boolean);
+    if(parts[0]==='shorts'||parts[0]==='embed') return parts[1];
+  }
+ }catch(e){}
+ return null;
+}
+async function fetchOembed(url){
+ try{
+   const r=await fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json');
+   if(!r.ok) return null; return await r.json();
+ }catch(e){return null}
+}
+function noteVideo(note){
+ if(!note.youtubeId)return '';
+ const t=note.videoTitle?esc(note.videoTitle):'YouTube видео';
+ const author=note.videoAuthor?`<div class="item-meta">Автор: ${esc(note.videoAuthor)}</div>`:'<div class="item-meta">Метаданные не удалось получить автоматически — ссылка и превью сохранены.</div>';
+ return `<div class="media-card" style="margin-top:10px">
+   <div><a href="${esc(note.url)}" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/${esc(note.youtubeId)}/hqdefault.jpg" alt="Превью YouTube"></a></div>
+   <div><div class="item-title">${t}</div>${author}
+   <div class="footer-note">Ссылка: <a href="${esc(note.url)}" target="_blank" rel="noopener">открыть видео</a></div></div>
+ </div>`;
+}
+function renderNotes(){
+ $('notesList').innerHTML=state.notes.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="item-main">
+ <div class="item-title">${esc(x.title||'Заметка')} <span class="badge">${fmtDate(x.date)}</span></div>
+ <div style="white-space:pre-wrap">${esc(x.text||'')}</div>
+ ${noteVideo(x)}
+ ${x.usefulInfo?`<div class="note-grid" style="margin-top:12px"><div><b>Полезная информация</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.usefulInfo)}</div></div><div><b>Ваш конспект / дополнения</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.extra||'')}</div></div></div>`:''}
+ </div><div class="item-actions"><button class="btn small" data-action="delete" data-type="notes" data-id="${x.id}">Удалить</button></div></div>`).join('') || `<div class="empty">Пока нет заметок.</div>`;
+}
+
+function renderAll(){renderMonthTasks();renderWeekend();renderGoals();renderFinance();renderDiary();renderMedia();renderNotes()}
+
+$('nav').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('panel-'+b.dataset.tab).classList.add('active')});
+
+
+function completeMonthTaskDay(id){
+  const x=state.monthTasks.find(x=>x.id===id);if(!x)return;
+  if(!Array.isArray(x.completedDays))x.completedDays=[];
+  const d=today();
+  if(x.completedDays.includes(d))x.completedDays=x.completedDays.filter(v=>v!==d);
+  else x.completedDays.push(d);
+  save();
+}
+
+function completeGoalOnce(type,id){
+  const x=state[type].find(x=>x.id===id);if(x){x.done=true;save()}
+}
+function undoGoalOnce(type,id){
+  const x=state[type].find(x=>x.id===id);if(x){x.done=false;save()}
+}
+function completeGoalDay(type,id,date=today()){
+  const x=state[type].find(x=>x.id===id);if(!x)return;
+  if(!Array.isArray(x.completedDays))x.completedDays=[];
+  if(!x.completedDays.includes(date))x.completedDays.push(date);
+  save();
+}
+function undoGoalDay(type,id,date=today()){
+  const x=state[type].find(x=>x.id===id);if(!x)return;
+  x.completedDays=Array.isArray(x.completedDays)?x.completedDays.filter(d=>d!==date):[];
+  save();
+}
+
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-action]'); if(!el)return;
+ if(el.dataset.action==='delete') remove(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='toggle') toggle(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='goal-once') completeGoalOnce(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='goal-once-undo') undoGoalOnce(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='goal-day') completeGoalDay(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='goal-day-undo') undoGoalDay(el.dataset.type,el.dataset.id);
+ if(el.dataset.action==='month-day') completeMonthTaskDay(el.dataset.id);
+});
+$('taskMonth').value=monthNow(); $('weekendStart').value=today(); $('monthlyGoalStart').value=today(); $('yearlyGoalStart').value=today(); $('finDate').value=today(); $('diaryDate').value=today(); $('mediaDate').value=today(); $('noteDate').value=today();
+
+$('addMonthTask').onclick=()=>{
+  const t=$('monthTaskText').value.trim();if(!t)return;
+  const type=$('monthTaskType').value;
+  state.monthTasks.push({id:uid(),month:$('taskMonth').value||monthNow(),text:t,done:false,type,completedDays:[]});
+  $('monthTaskText').value='';save();
+};
+$('taskMonth').onchange=renderMonthTasks;
+$('addWeekend').onclick=()=>{const t=$('weekendTaskText').value.trim();if(!t)return;state.weekend.push({id:uid(),start:$('weekendStart').value||today(),day:Number($('weekendDay').value),text:t,done:false});$('weekendTaskText').value='';save()};
+$('weekendStart').onchange=renderWeekend;
+
+$('monthlyGoalText').addEventListener('keydown',e=>{if(e.key==='Enter')$('addMonthlyGoal').click()});
+$('yearlyGoalText').addEventListener('keydown',e=>{if(e.key==='Enter')$('addYearlyGoal').click()});
+
+$('addMonthlyGoal').onclick=()=>{
+  const t=$('monthlyGoalText').value.trim();if(!t)return;
+  const type=$('monthlyGoalType').value;
+  state.monthlyGoals.push({id:uid(),text:t,done:false,type,startDate:type==='daily31'?($('monthlyGoalStart').value||today()):null,completedDays:[]});
+  $('monthlyGoalText').value='';save();
+};
+$('addYearlyGoal').onclick=()=>{
+  const t=$('yearlyGoalText').value.trim();if(!t)return;
+  const type=$('yearlyGoalType').value;
+  state.yearlyGoals.push({id:uid(),text:t,done:false,type,startDate:type==='daily31'?($('yearlyGoalStart').value||today()):null,completedDays:[]});
+  $('yearlyGoalText').value='';save();
+};
+$('addFinance').onclick=()=>{const amount=Number($('finAmount').value);if(!amount)return;state.finances.push({id:uid(),date:$('finDate').value||today(),type:$('finType').value,amount,category:$('finCategory').value.trim(),comment:$('finComment').value.trim()});$('finAmount').value='';$('finCategory').value='';$('finComment').value='';save()};
+$('addDiary').onclick=()=>{const text=$('diaryText').value.trim();if(!text)return;state.diary.push({id:uid(),date:$('diaryDate').value||today(),title:$('diaryTitle').value.trim(),text});$('diaryTitle').value='';$('diaryText').value='';save()};
+$('addMedia').onclick=()=>{const title=$('mediaTitle').value.trim();if(!title)return;state.media.push({id:uid(),title,type:$('mediaType').value,rating:Number($('mediaRating').value||0),date:$('mediaDate').value||today(),memorable:$('mediaMemorable').value.trim(),summary:$('mediaSummary').value.trim()});['mediaTitle','mediaRating','mediaMemorable','mediaSummary'].forEach(id=>$(id).value='');save()};
+$('mediaFilter').onchange=renderMedia;
+$('addNote').onclick=async()=>{
+ const title=$('noteTitle').value.trim(), text=$('noteText').value.trim(), date=$('noteDate').value||today(), url=$('youtubeUrl').value.trim();
+ const n={id:uid(),date,title,text,url:'',youtubeId:null,videoTitle:'',videoAuthor:'',usefulInfo:'',extra:''};
+ if(url){
+   const id=youtubeId(url); n.url=url; n.youtubeId=id;
+   if(id){
+     const meta=await fetchOembed(url);
+     if(meta){n.videoTitle=meta.title||'';n.videoAuthor=meta.author_name||'';n.usefulInfo=`Название: ${meta.title||'—'}\nАвтор/канал: ${meta.author_name||'—'}\nТип ссылки: YouTube\nID ролика: ${id}\n\nАвтоматически извлечены только доступные публичные метаданные. Содержание и полезные выводы добавь ниже вручную.`;}
+     else n.usefulInfo=`Платформа: YouTube\nID ролика: ${id}\nПревью и ссылка сохранены. Автоматическое чтение содержания ролика недоступно без внешнего API.`;
+   }
+ }
+ state.notes.push(n);['noteTitle','noteText','youtubeUrl'].forEach(id=>$(id).value='');save();
+};
+$('exportBtn').onclick=()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='личный-трекер-backup.json';a.click();URL.revokeObjectURL(a.href)
+};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{const imported=JSON.parse(await f.text()); Object.assign(state,imported);save();alert('Данные импортированы.');}catch(err){alert('Не удалось импортировать JSON.')}
+ e.target.value='';
+};
+$('resetBtn').onclick=()=>{if(confirm('Удалить все данные трекера? Это действие нельзя отменить.')){Object.keys(state).forEach(k=>state[k]=[]);save()}};
+renderAll();
+</script>
+</body>
+</html>
