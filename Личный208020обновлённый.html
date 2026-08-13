@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<!-- saved from url=(0188)https://eugineli2000-sys.github.io/exile-tracker/%D0%9B%D0%B8%D1%87%D0%BD%D1%8B%D0%B9_%D1%82%D1%80%D0%B5%D0%BA%D0%B5%D1%80_EXILE_%D1%80%D0%B5%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%20(1).html -->
+<html lang="ru" class="light" data-lt-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Личный трекер</title>
+<style>
+:root{
+  --bg:#07080c;
+  --bg-2:#0b0d13;
+  --panel:#0d1017;
+  --panel-2:#11151e;
+  --panel-3:#151a24;
+  --text:#eef1f7;
+  --muted:#7f8998;
+  --line:#252b38;
+  --line-soft:#1a202b;
+  --purple:#7c4dff;
+  --purple-2:#a66cff;
+  --blue:#2e9cff;
+  --cyan:#25d7ff;
+  --green:#23d69b;
+  --yellow:#e8bd45;
+  --red:#ff4f72;
+  --orange:#ff8b3d;
+  --shadow:0 10px 28px rgba(0,0,0,.22);
+  --radius:14px;
+  --header-h:74px;
+}
+
+html{color-scheme:dark}
+html.light{
+  --bg:#eef1f6;
+  --bg-2:#e5e9f1;
+  --panel:#ffffff;
+  --panel-2:#f7f8fb;
+  --panel-3:#eef1f6;
+  --text:#151a24;
+  --muted:#667085;
+  --line:#d7dce5;
+  --line-soft:#e8ebf1;
+  --purple:#6941e8;
+  --purple-2:#7c4dff;
+  --blue:#1976d2;
+  --cyan:#009fc1;
+  --green:#099268;
+  --yellow:#b78500;
+  --red:#d9365e;
+  --orange:#d96a16;
+  --shadow:0 8px 22px rgba(32,42,60,.08);
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(124,77,255,.09),transparent 28rem),
+    radial-gradient(circle at 90% 10%,rgba(37,215,255,.055),transparent 26rem),
+    var(--bg);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.45;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+::selection{background:rgba(124,77,255,.35)}
+.app{min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(7,8,12,.96);
+  border-bottom:1px solid var(--line);
+}
+html.light .topbar{background:rgba(255,255,255,.96)}
+
+.header{
+  width:min(1500px,100%);
+  min-height:var(--header-h);
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;flex:0 0 42px;
+  display:grid;place-items:center;
+  border:1px solid rgba(124,77,255,.65);
+  border-radius:11px;
+  color:#fff;
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:-1px;
+  background:linear-gradient(135deg,#25144f,#101522 62%);
+  box-shadow:inset 0 0 20px rgba(124,77,255,.14);
+}
+.brand h1{
+  margin:0;
+  font-size:20px;
+  line-height:1;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  padding:8px 11px;
+  border-radius:9px;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.btn:hover{border-color:#3b4352;background:var(--panel-3)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(135deg,#7447f4,#5930c7);color:#fff;border-color:#8058f5}
+.btn.danger{color:#fff;background:#8d2742;border-color:#a93350}
+.btn.small{padding:6px 9px;font-size:12px}
+
+.theme-btn{
+  min-width:38px;
+  padding-inline:9px;
+  font-size:16px;
+}
+
+.nav{
+  width:min(1500px,100%);
+  margin:auto;
+  padding:0 14px 10px;
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
+}
+.nav::-webkit-scrollbar{height:5px}
+.nav::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.tab{
+  position:relative;
+  border:0;
+  background:transparent;
+  padding:9px 12px;
+  border-radius:8px;
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  transition:color .15s,background .15s;
+}
+.tab:hover{color:var(--text);background:var(--panel-2)}
+.tab.active{background:rgba(124,77,255,.14);color:var(--purple-2)}
+.tab.active::after{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;bottom:-10px;
+  height:2px;
+  background:var(--purple);
+  border-radius:2px;
+}
+
+main{
+  width:min(1500px,100%);
+  margin:auto;
+  padding:18px 20px 28px;
+}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:panelIn .14s ease-out}
+@keyframes panelIn{from{opacity:.65;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.card{
+  grid-column:span 12;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  contain:layout paint;
+}
+.card::before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(var(--purple),transparent 70%);
+  opacity:.7;
+}
+.card.half{grid-column:span 6}
+.card.third{grid-column:span 4}
+.card h2,.card h3{
+  margin:0 0 13px;
+  font-size:15px;
+  letter-spacing:.02em;
+}
+.card h2::before{content:"// ";color:var(--purple-2);font-family:ui-monospace,monospace}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar>*{margin:0}
+.toolbar .input{flex:1 1 180px}
+
+.field{display:grid;gap:6px;margin-bottom:10px}
+.field label{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.input,.textarea,.select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 10px;
+  background:var(--bg-2);
+  color:var(--text);
+  outline:none;
+}
+.input:focus,.textarea:focus,.select:focus{
+  border-color:rgba(124,77,255,.75);
+  box-shadow:0 0 0 2px rgba(124,77,255,.1);
+}
+.textarea{min-height:105px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form-grid .full{grid-column:1/-1}
+
+.list{display:grid;gap:8px}
+.item{
+  border:1px solid var(--line-soft);
+  border-left:2px solid #303746;
+  border-radius:9px;
+  padding:10px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  background:rgba(255,255,255,.012);
+}
+.item:hover{border-left-color:var(--purple)}
+.item-main{flex:1;min-width:0}
+.item-title{font-weight:750;margin-bottom:3px}
+.item-meta{font-size:11px;color:var(--muted)}
+.item-actions{display:flex;gap:5px;flex-wrap:wrap}
+.checkbox-row{display:flex;gap:8px;align-items:flex-start}
+.checkbox-row input{margin-top:3px;width:17px;height:17px;accent-color:var(--purple)}
+.done{text-decoration:line-through;color:var(--muted)}
+.empty{
+  padding:24px 16px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:9px;
+  background:rgba(255,255,255,.01);
+}
+
+.progress{
+  height:8px;
+  border-radius:99px;
+  background:var(--panel-3);
+  overflow:hidden;
+  border:1px solid var(--line-soft);
+}
+.progress>div{
+  height:100%;
+  background:linear-gradient(90deg,var(--purple),var(--blue));
+  transition:width .2s ease;
+}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stat{
+  padding:11px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:var(--bg-2);
+}
+.stat b{display:block;font-size:21px;margin-top:3px}
+.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+.table-wrap{overflow:auto;border:1px solid var(--line-soft);border-radius:9px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--bg-2)}
+.amount.income{color:var(--green);font-weight:800}
+.amount.expense{color:var(--red);font-weight:800}
+
+
+.goal-dashboard{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:16px;align-items:center}
+.goal-chart{display:grid;place-items:center;position:relative;min-height:205px}
+.goal-chart svg{width:190px;height:190px;transform:rotate(-90deg);overflow:visible}
+.goal-chart-track{fill:none;stroke:var(--panel-3);stroke-width:18}
+.goal-chart-segment{fill:none;stroke:var(--purple);stroke-width:18;stroke-linecap:butt;transition:stroke .15s,opacity .15s}
+.goal-chart-segment.done{stroke:var(--purple-2)}
+.goal-chart-center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.goal-chart-center-inner{text-align:center}
+.goal-chart-percent{display:block;font-size:29px;line-height:1;font-weight:850}
+.goal-chart-caption{display:block;margin-top:5px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.goal-legend{display:grid;gap:8px}
+.goal-legend-row{display:flex;justify-content:space-between;gap:10px;padding:8px 9px;border:1px solid var(--line-soft);border-radius:8px;background:var(--bg-2);font-size:11px}
+.goal-legend-row b{font-size:13px}
+.goal-type{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:99px;background:rgba(124,77,255,.1);color:var(--purple-2);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.goal-day-progress{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px}
+.goal-day-dot{width:7px;height:7px;border-radius:50%;background:var(--panel-3);border:1px solid var(--line)}
+.goal-day-dot.done{background:var(--purple-2);border-color:var(--purple-2)}
+.goal-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.goal-actions .btn{white-space:nowrap}
+.goal-series-note{font-size:10px;color:var(--muted);margin-top:5px}
+@media(max-width:900px){.goal-dashboard{grid-template-columns:1fr}.goal-chart{min-height:190px}}
+
+.media-card{display:grid;grid-template-columns:220px 1fr;gap:12px}
+.media-card img{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  border-radius:8px;border:1px solid var(--line);
+  display:block;
+}
+.badge{
+  display:inline-flex;align-items:center;
+  padding:3px 7px;border-radius:99px;
+  font-size:10px;font-weight:800;
+  background:rgba(124,77,255,.12);color:var(--purple-2);
+  margin-right:4px;
+}
+.rating{font-size:16px;letter-spacing:1px;color:var(--yellow)}
+.note-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.footer-note{font-size:11px;color:var(--muted);margin-top:9px}
+.kbd{font-family:ui-monospace,monospace;background:var(--panel-3);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+
+@media(max-width:1000px){
+  .card.half,.card.third{grid-column:span 12}
+  .media-card{grid-template-columns:190px 1fr}
+}
+@media(max-width:700px){
+  .header{padding:10px 12px;align-items:flex-start}
+  .brand h1{font-size:17px}
+  .brand p{display:none}
+  .actions{max-width:190px}
+  .actions .btn{font-size:11px}
+  main{padding:12px}
+  .form-grid,.note-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .media-card{grid-template-columns:1fr}
+  .tab.active::after{bottom:-7px}
+  .nav{padding-bottom:7px}
+}
+@media(max-width:430px){
+  .header{display:block}
+  .actions{margin-top:9px;max-width:none;justify-content:flex-start}
+  .stats{grid-template-columns:1fr 1fr}
+  .card{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
+
+/* === Расширение трекера: достижения, календарь, выбранные дни, редактирование === */
+.icon{
+  width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:10px;background:var(--panel-3);
+  font-size:17px;
+}
+.item-icon{display:flex;gap:9px;align-items:flex-start;min-width:0}
+.task-item{display:grid;grid-template-columns:auto minmax(0,1fr) 112px auto;gap:10px;align-items:center}
+.task-ring{width:74px;height:74px;position:relative;display:grid;place-items:center}
+.task-ring svg{width:74px;height:74px;transform:rotate(-90deg)}
+.task-ring circle{fill:none;stroke-width:7}
+.task-ring .track{stroke:var(--panel-3)}
+.task-ring .fill{stroke:var(--purple-2);stroke-linecap:round;transition:stroke-dashoffset .25s}
+.task-ring span{position:absolute;font-size:11px;font-weight:850}
+.day-picker{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.day-chip{
+  width:30px;height:30px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg-2);color:var(--muted);font-size:10px;font-weight:800;
+}
+.day-chip:hover{border-color:var(--purple);color:var(--text)}
+.day-chip.active{background:rgba(124,77,255,.18);color:var(--purple-2);border-color:rgba(124,77,255,.55)}
+.day-chip.done{background:rgba(35,214,155,.16);color:var(--green);border-color:rgba(35,214,155,.55)}
+.day-chip.active.done{background:linear-gradient(135deg,rgba(35,214,155,.2),rgba(124,77,255,.2))}
+.edit-panel{display:none;margin-top:9px;padding:10px;border:1px dashed var(--line);border-radius:9px;background:var(--bg-2)}
+.edit-panel.open{display:block}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-weekday{text-align:center;color:var(--muted);font-size:10px;font-weight:850;padding:4px 0}
+.calendar-day{
+  min-height:56px;padding:6px;border:1px solid var(--line-soft);border-radius:8px;
+  background:var(--bg-2);cursor:pointer;position:relative;
+}
+.calendar-day:hover{border-color:var(--purple)}
+.calendar-day.muted{opacity:.42}
+.calendar-day.today{box-shadow:inset 0 0 0 1px var(--purple)}
+.calendar-day.selected{background:rgba(124,77,255,.16);border-color:var(--purple)}
+.calendar-day-number{font-weight:850;font-size:11px}
+.calendar-day-count{font-size:9px;color:var(--muted);margin-top:4px}
+.calendar-day-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.calendar-day-dot{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.calendar-day-dot.done{background:var(--green)}
+.calendar-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.achievement-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.achievement-card{
+  padding:14px;border:1px solid var(--line-soft);border-radius:11px;background:var(--bg-2);
+}
+.achievement-card .big-icon{font-size:26px}
+.achievement-card b{display:block;font-size:22px;margin-top:4px}
+.achievement-card span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.achievement-list{display:grid;gap:7px;margin-top:10px}
+.achievement-row{display:flex;justify-content:space-between;gap:10px;padding:9px;border:1px solid var(--line-soft);border-radius:8px}
+.achievement-row.done{border-color:rgba(35,214,155,.45);background:rgba(35,214,155,.06)}
+.modal-backdrop{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(0,0,0,.55);padding:16px}
+.modal-backdrop.open{display:grid}
+.modal{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.modal-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}
+@media(max-width:900px){
+  .achievement-grid{grid-template-columns:1fr}
+  .task-item{grid-template-columns:auto minmax(0,1fr) 78px}
+  .task-item .item-actions{grid-column:2/-1}
+}
+@media(max-width:620px){
+  .calendar-day{min-height:48px;padding:5px}
+  .task-ring{width:62px;height:62px}.task-ring svg{width:62px;height:62px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">EX</div>
+        <div>
+          <h1>Личный трекер</h1>
+          <p>Дисциплина · прогресс · личная система</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn small" id="exportBtn">Экспорт данных</button>
+        <button class="btn small" id="importBtn">Импорт</button>
+         <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Переключить на тёмную тему" title="Переключить на тёмную тему">☾</button>
+        <input type="file" id="importFile" accept=".json" hidden="">
+        <button class="btn small danger" id="resetBtn">Сбросить всё</button>
+      </div>
+    </div>
+    <div class="nav" id="nav">
+      <button class="tab active" data-tab="monthTasks">📅 Месяц: задачи</button>
+      <button class="tab" data-tab="weekend">🌤️ Выходные: 3 дня</button>
+      <button class="tab" data-tab="monthlyGoals">🎯 Цели: месяц</button>
+       <button class="tab" data-tab="yearlyGoals">🏆 Цели: год</button>
+      <button class="tab" data-tab="finance">💰 Финансы</button>
+      <button class="tab" data-tab="diary">📔 Дневник</button>
+      <button class="tab" data-tab="media">🎬 Фильмы / сериалы</button>
+<button class="tab" data-tab="achievements">🏅 Достижения</button>
+      <button class="tab active" data-tab="notes">Заметки + YouTube</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="tab-panel active" id="panel-monthTasks">
+      <div class="grid">
+        <div class="card half">
+          <h2>Общие задачи на месяц</h2>
+          <div class="toolbar">
+            <input class="input" id="monthTaskText" placeholder="Новая задача">
+             <select class="select" id="monthTaskType" style="max-width:260px"><option value="once">Обычная задача</option><option value="daily31">Задача на 31 день</option></select>
+<select class="select" id="monthTaskIcon" style="max-width:150px">
+  <option value="✓">✓ Обычная</option><option value="🏃">🏃 Спорт</option><option value="📚">📚 Учёба</option>
+  <option value="💼">💼 Работа</option><option value="🎨">🎨 Творчество</option><option value="🧹">🧹 Дом</option>
+  <option value="💡">💡 Идея</option><option value="❤️">❤️ Личное</option><option value="⭐">⭐ Важное</option>
+</select>
+            <button class="btn primary" id="addMonthTask">Добавить</button>
+          </div>
+          <div class="field"><label>Месяц</label><input class="input" type="month" id="taskMonth"></div>
+          <div id="monthTasksList" class="list"><div class="empty">Пока нет задач за этот месяц.</div></div>
+        </div>
+        <div class="card half">
+          <h2>Прогресс месяца</h2>
+          <div class="stats">
+            <div class="stat"><span>Всего</span><b id="mtTotal">0</b></div>
+            <div class="stat"><span>Готово</span><b id="mtDone">0</b></div>
+            <div class="stat"><span>Осталось</span><b id="mtLeft">0</b></div>
+            <div class="stat"><span>Процент</span><b id="mtPct">0%</b></div>
+          </div>
+          <div style="margin-top:16px" class="progress"><div id="mtBar" style="width:0%"></div></div>
+          <p class="footer-note">Задачи сохраняются отдельно для выбранного месяца.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-weekend">
+      <div class="grid">
+        <div class="card half">
+          <h2>3 дня выходных</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата начала</label><input class="input" type="date" id="weekendStart"></div>
+            <div class="field"><label>День</label><select class="select" id="weekendDay"><option value="0">День 1</option><option value="1">День 2</option><option value="2">День 3</option></select></div>
+            <div class="field full"><label>Задача / цель</label><input class="input" id="weekendTaskText" placeholder="Например: закончить книгу"></div>
+          </div>
+          <button class="btn primary" id="addWeekend">Добавить</button>
+          <div style="margin-top:14px" id="weekendList" class="list"><div class="empty">Добавь несколько задач для трёх дней.</div></div>
+        </div>
+        <div class="card half">
+          <h2>Идея для выходных</h2>
+          <p style="color:var(--muted)">Раздел рассчитан на короткий трёхдневный цикл. Можно менять дату старта, чтобы вести любой набор из трёх дней.</p>
+          <div id="weekendSummary"><div class="stats"><div class="stat"><span>День 1</span><b>0/0</b></div><div class="stat"><span>День 2</span><b>0/0</b></div><div class="stat"><span>День 3</span><b>0/0</b></div><div class="stat"><span>Всего</span><b>0/0</b></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="tab-panel" id="panel-monthlyGoals">
+  <div class="grid">
+    <div class="card">
+      <h2>Цели на месяц</h2>
+      <div class="form-grid">
+        <div class="field full"><label>Цель</label><input class="input" id="monthlyGoalText" placeholder="Например: заниматься 3 раза в неделю"></div>
+        <div class="field"><label>Тип цели</label>
+          <select class="select" id="monthlyGoalType">
+            <option value="once">Обычная цель — закрыть один раз</option>
+            <option value="scheduled">По выбранным дням</option>
+            <option value="daily31">Каждый день выбранного периода</option>
+          </select>
+        </div>
+        <div class="field"><label>Дата старта</label><input class="input" type="date" id="monthlyGoalStart"></div>
+        <div class="field"><label>Дата окончания</label><input class="input" type="date" id="monthlyGoalEnd"></div>
+        <div class="field"><label>Иконка</label>
+          <select class="select" id="monthlyGoalIcon">
+            <option value="🎯">🎯 Цель</option><option value="🏃">🏃 Спорт</option><option value="📚">📚 Учёба</option>
+            <option value="💼">💼 Работа</option><option value="🎨">🎨 Творчество</option><option value="🧘">🧘 Саморазвитие</option>
+            <option value="💰">💰 Финансы</option><option value="❤️">❤️ Личное</option>
+          </select>
+        </div>
+      </div>
+      <div id="monthlyGoalDayPicker" class="day-picker"></div>
+      <button class="btn primary" id="addMonthlyGoal">Добавить цель</button>
+      <p class="footer-note">Для «По выбранным дням» отметь нужные даты в календаре. Для ежедневной цели можно задать свой период, а не только 31 день.</p>
+    </div>
+
+    <div class="card">
+      <div class="calendar-head">
+        <h2 style="margin:0">Календарь месяца</h2>
+        <div class="calendar-controls">
+          <button class="btn small" id="calendarPrev">←</button>
+          <input class="input" type="month" id="goalCalendarMonth" style="width:auto">
+          <button class="btn small" id="calendarNext">→</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="goalCalendar"></div>
+      <p class="footer-note">Нажми на дату — она станет выбранной. Внизу календаря отображаются цели и задачи этого дня.</p>
+      <div id="calendarDaySummary" class="list" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card half">
+      <h2>Цели на выбранный месяц</h2>
+      <div id="monthlyGoalsList" class="list"><div class="empty">Нет целей на месяц.</div></div>
+    </div>
+
+    <div class="card half">
+      <h2>Общий прогресс месяца</h2>
+      <div class="goal-dashboard">
+        <div class="goal-chart" id="monthlyGoalChart"></div>
+        <div class="goal-legend">
+          <div class="goal-legend-row"><span>Выполнено</span><b id="monthlyDone">0</b></div>
+          <div class="goal-legend-row"><span>Всего частей</span><b id="monthlyTotal">0</b></div>
+          <div class="goal-legend-row"><span>Осталось</span><b id="monthlyLeft">0</b></div>
+          <div class="goal-legend-row"><span>Прогресс</span><b id="monthlyPct">0%</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section class="tab-panel" id="panel-yearlyGoals">
+      <div class="grid">
+        <div class="card half">
+          <h2>Цели на год</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Цель</label>
+              <input class="input" id="yearlyGoalText" placeholder="Например: создать финансовую подушку">
+            </div>
+            <div class="field">
+              <label>Тип цели</label>
+              <select class="select" id="yearlyGoalType">
+                <option value="once">Обычная задача — закрыть один раз</option>
+                <option value="daily31">Длительная цель на 31 день — отмечать каждый день</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Дата старта</label>
+              <input class="input" type="date" id="yearlyGoalStart">
+            </div>
+          </div>
+          <button class="btn primary" id="addYearlyGoal">Добавить цель</button>
+          <p class="footer-note">Закрытие обычной цели закрашивает одну часть общей диаграммы. Длительная цель добавляет по одной части за каждый выполненный день.</p>
+          <div id="yearlyGoalsList" class="list"><div class="empty">Нет целей на год.</div></div>
+        </div>
+        <div class="card half">
+          <h2>Общий прогресс года</h2>
+          <div class="goal-dashboard">
+            <div class="goal-chart" id="yearlyGoalChart"><div class="goal-chart-center"><div class="goal-chart-center-inner"><span class="goal-chart-percent">0%</span><span class="goal-chart-caption">нет целей</span></div></div></div>
+            <div class="goal-legend">
+              <div class="goal-legend-row"><span>Выполнено</span><b id="yearlyDone">0</b></div>
+              <div class="goal-legend-row"><span>Всего частей</span><b id="yearlyTotal">0</b></div>
+              <div class="goal-legend-row"><span>Осталось</span><b id="yearlyLeft">0</b></div>
+              <div class="goal-legend-row"><span>Прогресс</span><b id="yearlyPct">0%</b></div>
+            </div>
+          </div>
+          <p class="footer-note">Круг синхронизирован с целями и изменяется автоматически при каждом выполнении.</p>
+        </div>
+      </div>
+    </section>
+
+<section class="tab-panel" id="panel-achievements">
+  <div class="grid">
+    <div class="card">
+      <h2>Достижения</h2>
+      <div class="achievement-grid">
+        <div class="achievement-card"><div class="big-icon">📅</div><span>Сегодня</span><b id="achDay">0%</b><div class="progress"><div id="achDayBar" style="width:0%"></div></div></div>
+        <div class="achievement-card"><div class="big-icon">📆</div><span>Эта неделя</span><b id="achWeek">0%</b><div class="progress"><div id="achWeekBar" style="width:0%"></div></div></div>
+        <div class="achievement-card"><div class="big-icon">🏆</div><span>Этот месяц</span><b id="achMonth">0%</b><div class="progress"><div id="achMonthBar" style="width:0%"></div></div></div>
+      </div>
+    </div>
+    <div class="card half">
+      <h2>День</h2><div id="achievementDayList" class="achievement-list"></div>
+    </div>
+    <div class="card half">
+      <h2>Неделя</h2><div id="achievementWeekList" class="achievement-list"></div>
+    </div>
+    <div class="card">
+      <h2>Месяц</h2><div id="achievementMonthList" class="achievement-list"></div>
+    </div>
+  </div>
+</section>
+
+    <section class="tab-panel" id="panel-finance">
+      <div class="grid">
+        <div class="card half">
+          <h2>Добавить финансовую запись</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата</label><input class="input" type="date" id="finDate"></div>
+            <div class="field"><label>Тип</label><select class="select" id="finType"><option value="expense">Расход</option><option value="income">Доход</option></select></div>
+            <div class="field"><label>Сумма</label><input class="input" type="number" step="0.01" id="finAmount" placeholder="0"></div>
+            <div class="field"><label>Категория</label><input class="input" id="finCategory" placeholder="Еда, транспорт..."></div>
+            <div class="field full"><label>Комментарий</label><input class="input" id="finComment" placeholder="Что это было?"></div>
+          </div>
+          <button class="btn primary" id="addFinance">Добавить запись</button>
+        </div>
+        <div class="card half">
+          <h2>Сводка</h2>
+          <div class="stats">
+            <div class="stat"><span>Доходы</span><b id="finIncome">0,00</b></div>
+            <div class="stat"><span>Расходы</span><b id="finExpense">0,00</b></div>
+            <div class="stat"><span>Баланс</span><b id="finBalance">0,00</b></div>
+            <div class="stat"><span>Записей</span><b id="finCount">0</b></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Журнал финансов</h2>
+          <div class="table-wrap"><table><thead><tr><th>Дата</th><th>Тип</th><th>Категория</th><th>Комментарий</th><th>Сумма</th><th></th></tr></thead><tbody id="financeTable"><tr><td colspan="6" class="empty">Нет финансовых записей.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-diary">
+      <div class="grid">
+        <div class="card half">
+          <h2>Новая запись в дневник</h2>
+          <div class="field"><label>Дата</label><input class="input" type="date" id="diaryDate"></div>
+          <div class="field"><label>Заголовок</label><input class="input" id="diaryTitle" placeholder="Как прошёл день?"></div>
+          <div class="field"><label>Текст</label><textarea class="textarea" id="diaryText" placeholder="Мысли, события, выводы..."></textarea></div>
+          <button class="btn primary" id="addDiary">Сохранить запись</button>
+        </div>
+        <div class="card half">
+          <h2>История</h2>
+          <div id="diaryList" class="list"><div class="empty">Пока нет записей дневника.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-media">
+      <div class="grid">
+        <div class="card">
+          <h2>Фильмы и сериалы</h2>
+          <div class="form-grid">
+            <div class="field"><label>Название</label><input class="input" id="mediaTitle" placeholder="Название фильма / сериала"></div>
+            <div class="field"><label>Тип</label><select class="select" id="mediaType"><option>Фильм</option><option>Сериал</option></select></div>
+            <div class="field"><label>Рейтинг 0–10</label><input class="input" type="number" min="0" max="10" step="0.1" id="mediaRating" placeholder="8.5"></div>
+            <div class="field"><label>Дата просмотра</label><input class="input" type="date" id="mediaDate"></div>
+            <div class="field full"><label>Что запомнилось</label><textarea class="textarea" id="mediaMemorable" placeholder="Атмосфера, сцены, персонажи, мысли..."></textarea></div>
+            <div class="field full"><label>Краткий пересказ</label><textarea class="textarea" id="mediaSummary" placeholder="Перескажи сюжет своими словами"></textarea></div>
+          </div>
+          <button class="btn primary" id="addMedia">Добавить</button>
+        </div>
+        <div class="card">
+          <div class="toolbar"><h2 style="margin:0">Список просмотров</h2><select class="select" id="mediaFilter" style="width:auto"><option value="all">Все</option><option value="Фильм">Фильмы</option><option value="Сериал">Сериалы</option></select></div>
+          <div id="mediaList" class="list"><div class="empty">Нет записей.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-notes">
+      <div class="grid">
+        <div class="card">
+          <h2>Новая заметка</h2>
+          <div class="form-grid">
+            <div class="field"><label>Дата</label><input class="input" type="date" id="noteDate"></div>
+            <div class="field"><label>Название</label><input class="input" id="noteTitle" placeholder="Название заметки"></div>
+            <div class="field full"><label>Текст заметки</label><textarea class="textarea" id="noteText" placeholder="Полезная мысль, идея, ссылка, конспект..."></textarea></div>
+            <div class="field full"><label>YouTube ссылка (необязательно)</label><input class="input" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
+          </div>
+          <button class="btn primary" id="addNote">Добавить заметку</button>
+          <p class="footer-note">После добавления YouTube-ссылки приложение автоматически определит ID ролика, покажет превью и попытается получить название и автора. Полный текст видео без внешнего API браузер надёжно извлечь не может, поэтому для подробного конспекта есть отдельное поле справа.</p>
+        </div>
+        <div class="card">
+          <h2>Заметки</h2>
+          <div id="notesList" class="list"><div class="item"><div class="item-main">
+ <div class="item-title">Заметка <span class="badge">13.08.2026</span></div>
+ <div style="white-space:pre-wrap">После просмотра этого видео, у меня возникла идея: Так же выжить в бункере который будет находиться не далеко от города, заранее собрав в городе все необходимые и не сильно обходимые припасы за 7 дней до ядерной бомбардировке, заранее найдя вместительную машину, чтобы перевести туда все вещи, и прожить максимальное кол-во дней в бункере</div>
+ <div class="media-card" style="margin-top:10px">
+   <div><a href="https://www.youtube.com/watch?v=qT1nbvMYG_Y&amp;t=1268s" target="_blank" rel="noopener"><img src="./Личный трекер_files/hqdefault.jpg" alt="Превью YouTube"></a></div>
+   <div><div class="item-title">200 дней Ядерной пустоши в Project zomboid Week one</div><div class="item-meta">Автор: WhisMoon</div>
+   <div class="footer-note">Ссылка: <a href="https://www.youtube.com/watch?v=qT1nbvMYG_Y&amp;t=1268s" target="_blank" rel="noopener">открыть видео</a></div></div>
+ </div>
+ <div class="note-grid" style="margin-top:12px"><div><b>Полезная информация</b><div style="white-space:pre-wrap;margin-top:6px">Название: 200 дней Ядерной пустоши в Project zomboid Week one
+Автор/канал: WhisMoon
+Тип ссылки: YouTube
+ID ролика: qT1nbvMYG_Y
+
+Автоматически извлечены только доступные публичные метаданные. Содержание и полезные выводы добавь ниже вручную.</div></div><div><b>Ваш конспект / дополнения</b><div style="white-space:pre-wrap;margin-top:6px"></div></div></div>
+ </div><div class="item-actions"><button class="btn small" data-action="delete" data-type="notes" data-id="mss2k1we84nd1p">Удалить</button></div></div><div class="item"><div class="item-main">
+ <div class="item-title">Сценарий для ролика <span class="badge">13.08.2026</span></div>
+ <div style="white-space:pre-wrap">Написать текст для закадровой озвучки ролика с помощью нейросети Ellevenlabs в котором будет рассказываться про фанатскую теорию в которой фильм "Бэтмен - тёмный рыцарь" нужно смотреть через призму карточной колоды, где Туз - это Бэтмен, а Джокер - Джокер который творит хаос в Готэме и нарушает правила и системность игры/работы Готэма, а дальше идут дамы, короли и вольты - это все гос служащие и просто служащие, а так же Рейчел и босы мафий, а дальше идут от 10 до 6 - это работники на мафию, то идея Кристофера Ноллана в целом понятна. Сценарий должен сочетать правила написания крутой текст для закадровой озвучки в стиле UtopiaShow, GEO, Топлес и прочих научпоп ютуберов, но про фильмы и использовать книги и научные материалы по сценаристки и драматургии</div>
+ 
+ 
+ </div><div class="item-actions"><button class="btn small" data-action="delete" data-type="notes" data-id="mss324pvakyvk5">Удалить</button></div></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <h2 id="editModalTitle">Редактирование</h2>
+    <div class="field"><label>Название</label><input class="input" id="editText"></div>
+    <div class="form-grid">
+      <div class="field"><label>Тип</label><select class="select" id="editType"><option value="once">Обычная задача</option><option value="scheduled">По выбранным дням</option><option value="daily31">Каждый день периода</option></select></div>
+      <div class="field"><label>Иконка</label><select class="select" id="editIcon">
+        <option>✓</option><option>🎯</option><option>🏃</option><option>📚</option><option>💼</option><option>🎨</option><option>🧘</option><option>💰</option><option>❤️</option><option>⭐</option><option>🧹</option><option>💡</option>
+      </select></div>
+      <div class="field"><label>Дата начала</label><input class="input" type="date" id="editStart"></div>
+      <div class="field"><label>Дата окончания</label><input class="input" type="date" id="editEnd"></div>
+    </div>
+    <div class="field"><label>Дни выполнения</label><div id="editDayPicker" class="day-picker"></div></div>
+    <div class="modal-actions"><button class="btn" id="editCancel">Отмена</button><button class="btn primary" id="editSave">Сохранить</button></div>
+  </div>
+</div>
+
+<script>
+
+// Theme: сохраняется отдельно от данных трекера.
+(function initTheme(){
+  const saved = localStorage.getItem('personalTracker_theme');
+  const dark = saved ? saved === 'dark' : true;
+  document.documentElement.classList.toggle('light', !dark);
+  const btn = document.getElementById('themeBtn');
+  if(btn){
+    btn.textContent = dark ? '☼' : '☾';
+    btn.title = dark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему';
+    btn.setAttribute('aria-label', btn.title);
+    btn.onclick = () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('personalTracker_theme', isLight ? 'light' : 'dark');
+      btn.textContent = isLight ? '☾' : '☼';
+      btn.title = isLight ? 'Переключить на тёмную тему' : 'Переключить на светлую тему';
+      btn.setAttribute('aria-label', btn.title);
+    };
+  }
+})();
+
+
+const KEY='personalTracker_v1';
+const rawState = JSON.parse(localStorage.getItem(KEY) || '{}');
+const state = Object.assign({
+  monthTasks:[], weekend:[], monthlyGoals:[], yearlyGoals:[], finances:[], diary:[], media:[], notes:[]
+}, rawState);
+
+const $ = id => document.getElementById(id);
+const today = () => new Date().toISOString().slice(0,10);
+const monthNow = () => new Date().toISOString().slice(0,7);
+function save(){localStorage.setItem(KEY,JSON.stringify(state)); renderAll();}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function money(n){return Number(n||0).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtDate(s){if(!s)return ''; const [y,m,d]=s.split('-'); return `${d}.${m}.${y}`}
+function parseDate(s){return new Date(s+'T12:00:00')}
+function iso(d){return d.toISOString().slice(0,10)}
+function daysBetween(a,b){const out=[];let d=parseDate(a),end=parseDate(b);while(d<=end){out.push(iso(d));d.setDate(d.getDate()+1)}return out}
+function monthBounds(month){const [y,m]=month.split('-').map(Number);return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:iso(new Date(y,m,0,12))}}
+function remove(type,id){state[type]=state[type].filter(x=>x.id!==id);save()}
+function toggle(type,id,field='done'){const x=state[type].find(x=>x.id===id);if(x){x[field]=!x[field];save()}}
+
+function normalizeItem(x){
+  if(!x.icon)x.icon='✓';
+  if(!x.type)x.type='once';
+  if(!Array.isArray(x.completedDays))x.completedDays=[];
+  if(x.type==='daily31' && !x.endDate){
+    x.endDate=iso(new Date(parseDate(x.startDate||today()).getTime()+30*86400000));
+  }
+  if(x.type==='scheduled' && !Array.isArray(x.scheduledDays))x.scheduledDays=[];
+  return x;
+}
+state.monthTasks.forEach(normalizeItem); state.monthlyGoals.forEach(normalizeItem); state.yearlyGoals.forEach(normalizeItem);
+
+function activeDates(x){
+  const start=x.startDate||x.month+'-01'||today();
+  if(x.type==='once')return [];
+  if(x.type==='scheduled')return Array.isArray(x.scheduledDays)?x.scheduledDays:[];
+  const end=x.endDate || iso(new Date(parseDate(start).getTime()+30*86400000));
+  return daysBetween(start,end);
+}
+function doneCount(x){
+  if(x.type==='once')return x.done?1:0;
+  const active=activeDates(x), set=new Set(Array.isArray(x.completedDays)?x.completedDays:[]);
+  return active.filter(d=>set.has(d)).length;
+}
+function totalCount(x){return x.type==='once'?1:activeDates(x).length}
+function isDoneOn(x,date){return x.type==='once'?!!x.done:Array.isArray(x.completedDays)&&x.completedDays.includes(date)}
+function taskPercent(x){const t=totalCount(x);return t?Math.round(doneCount(x)/t*100):0}
+
+function ring(percent,caption=''){
+  const r=29,circ=2*Math.PI*r,offset=circ*(1-percent/100);
+  return `<div class="task-ring"><svg viewBox="0 0 74 74"><circle class="track" cx="37" cy="37" r="${r}"></circle><circle class="fill" cx="37" cy="37" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle></svg><span>${caption||percent+'%'}</span></div>`;
+}
+
+function pickerHtml(id,selected=[],month=$('taskMonth')?.value||monthNow()){
+  const {start,end}=monthBounds(month), days=daysBetween(start,end), set=new Set(selected);
+  return days.map(d=>`<button type="button" class="day-chip ${set.has(d)?'active':''}" data-picker="${id}" data-date="${d}">${parseDate(d).getDate()}</button>`).join('');
+}
+function bindPicker(id,selectedRef){
+  const el=$(id); if(!el)return;
+  el.onclick=e=>{const b=e.target.closest('[data-picker]');if(!b)return;const d=b.dataset.date;const i=selectedRef.indexOf(d);if(i>=0)selectedRef.splice(i,1);else selectedRef.push(d);b.classList.toggle('active',i<0)};
+}
+
+let newMonthSelected=[], newGoalSelected=[], editSelected=[];
+function renderMonthTaskPicker(){const type=$('monthTaskType').value;if(type==='scheduled'){$('monthTaskDayPicker').innerHTML=pickerHtml('newMonth',newMonthSelected)}else $('monthTaskDayPicker').innerHTML='';}
+function renderGoalPicker(){const type=$('monthlyGoalType').value;if(type==='scheduled')$('monthlyGoalDayPicker').innerHTML=pickerHtml('newGoal',newGoalSelected,$('goalCalendarMonth').value||monthNow());else $('monthlyGoalDayPicker').innerHTML='';}
+
+function renderMonthTasks(){
+  const month=$('taskMonth').value||monthNow(),items=state.monthTasks.filter(x=>x.month===month).map(normalizeItem);
+  $('monthTasksList').innerHTML=items.length?items.map(x=>{
+    const active=activeDates(x), done=doneCount(x), total=totalCount(x), pct=taskPercent(x), td=isDoneOn(x,today());
+    const chips=x.type==='scheduled'?`<div class="day-picker">${active.map(d=>`<button type="button" class="day-chip ${td&&d===today()?'done':''}">${parseDate(d).getDate()}</button>`).join('')}</div>`:'';
+    return `<div class="item task-item">
+      <div class="item-icon"><div class="icon">${esc(x.icon)}</div></div>
+      <div class="item-main">
+        <div class="item-title ${x.done&&x.type==='once'?'done':''}">${esc(x.text)} <span class="goal-type">${x.type==='once'?'1 раз':x.type==='scheduled'?`${total} дней`:`${total} дней`}</span></div>
+        <div class="item-meta">${x.type==='once'?`Месяц: ${month}`:`Выполнено ${done}/${total} · ${pct}%`}</div>
+        ${x.type!=='once'?`<div class="progress" style="margin-top:7px"><div style="width:${pct}%"></div></div>${chips}`:''}
+        <div class="edit-panel" id="edit-${x.id}"></div>
+      </div>
+      ${ring(pct,x.type==='once'?(x.done?'✓':'—'):`${done}/${total}`)}
+      <div class="item-actions">
+        <input type="checkbox" ${td?'checked':''} data-action="${x.type==='once'?'toggle':'month-day'}" data-type="monthTasks" data-id="${x.id}" title="Выполнено сегодня">
+        <button class="btn small" data-action="edit" data-type="monthTasks" data-id="${x.id}">✏️</button>
+        <button class="btn small" data-action="delete" data-type="monthTasks" data-id="${x.id}">🗑️</button>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty">Пока нет задач за этот месяц.</div>`;
+  const dayItems=items.filter(x=>isDoneOn(x,today())).length,total=items.length,pct=total?Math.round(dayItems/total*100):0;
+  $('mtTotal').textContent=total;$('mtDone').textContent=dayItems;$('mtLeft').textContent=total-dayItems;$('mtPct').textContent=pct+'%';$('mtBar').style.width=pct+'%';
+}
+function weekendDates(start){const d=parseDate(start);return [0,1,2].map(i=>{const x=new Date(d);x.setDate(x.getDate()+i);return iso(x)})}
+function renderWeekend(){
+ const start=$('weekendStart').value||today(),dates=weekendDates(start),items=state.weekend.filter(x=>x.start===start);
+ $('weekendList').innerHTML=items.length?items.map(x=>`<div class="item"><div class="checkbox-row"><input type="checkbox" ${x.done?'checked':''} data-action="toggle" data-type="weekend" data-id="${x.id}"></div><div class="item-main"><div class="item-title ${x.done?'done':''}">🌤️ ${esc(x.text)}</div><div class="item-meta">${dates[x.day]} · День ${x.day+1}</div></div><div class="item-actions"><button class="btn small" data-action="delete" data-type="weekend" data-id="${x.id}">🗑️</button></div></div>`).join(''):`<div class="empty">Добавь несколько задач для трёх дней.</div>`;
+ $('weekendSummary').innerHTML=`<div class="stats"><div class="stat"><span>День 1</span><b>${items.filter(x=>x.day===0&&x.done).length}/${items.filter(x=>x.day===0).length}</b></div><div class="stat"><span>День 2</span><b>${items.filter(x=>x.day===1&&x.done).length}/${items.filter(x=>x.day===1).length}</b></div><div class="stat"><span>День 3</span><b>${items.filter(x=>x.day===2&&x.done).length}/${items.filter(x=>x.day===2).length}</b></div><div class="stat"><span>Всего</span><b>${items.filter(x=>x.done).length}/${items.length}</b></div></div>`;
+}
+
+function goalChart(containerId,items){
+  const el=$(containerId);if(!el)return;
+  const segments=[];items.forEach(x=>{const a=activeDates(x);if(x.type==='once')segments.push({done:!!x.done});else a.forEach(d=>segments.push({done:isDoneOn(x,d)}))});
+  const total=segments.length,done=segments.filter(x=>x.done).length,pct=total?Math.round(done/total*100):0;
+  if(!total){el.innerHTML='<div class="goal-chart-center"><div class="goal-chart-center-inner"><span class="goal-chart-percent">0%</span><span class="goal-chart-caption">нет целей</span></div></div>';return}
+  const cx=100,cy=100,r=72,circ=2*Math.PI*r,seg=Math.max(.35,circ/total-Math.min(1.6,circ/total*.12));
+  const parts=segments.map((x,i)=>`<circle class="goal-chart-segment ${x.done?'done':''}" cx="${cx}" cy="${cy}" r="${r}" stroke-dasharray="${seg} ${circ-seg}" stroke-dashoffset="${-(i*(circ/total))}"></circle>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 200 200" role="img" aria-label="Прогресс ${pct}%"><circle class="goal-chart-track" cx="${cx}" cy="${cy}" r="${r}"></circle>${parts}</svg><div class="goal-chart-center"><div class="goal-chart-center-inner"><span class="goal-chart-percent">${pct}%</span><span class="goal-chart-caption">${done} / ${total} частей</span></div></div>`;
+}
+
+function renderGoals(){
+  const items=state.monthlyGoals.map(normalizeItem);
+  $('monthlyGoalsList').innerHTML=items.length?items.map(x=>{
+    const active=activeDates(x),done=doneCount(x),total=totalCount(x),pct=taskPercent(x),td=isDoneOn(x,today());
+    return `<div class="item task-item">
+      <div class="item-icon"><div class="icon">${esc(x.icon||'🎯')}</div></div>
+      <div class="item-main">
+        <div class="item-title ${x.done&&x.type==='once'?'done':''}">${esc(x.text)} <span class="goal-type">${x.type==='once'?'1 раз':`${total} дней`}</span></div>
+        <div class="item-meta">${x.type==='once'?(x.done?'Цель закрыта':'Цель ещё не закрыта'):`Прогресс: ${done}/${total} · ${fmtDate(x.startDate||today())}${x.endDate?' → '+fmtDate(x.endDate):''}`}</div>
+        ${x.type!=='once'?`<div class="progress" style="margin-top:8px"><div style="width:${pct}%"></div></div><div class="goal-series-note">Отмечено ${done} из ${total} дней</div>`:''}
+        ${x.type!=='once'?`<div class="day-picker">${active.slice(0,31).map(d=>`<button class="day-chip ${isDoneOn(x,d)?'done':''}" data-action="goal-specific-day" data-type="monthlyGoals" data-id="${x.id}" data-date="${d}" title="${fmtDate(d)}">${parseDate(d).getDate()}</button>`).join('')}</div>`:''}
+      </div>
+      ${ring(pct,x.type==='once'?(x.done?'✓':'—'):`${done}/${total}`)}
+      <div class="item-actions">
+        <button class="btn small primary" data-action="${x.type==='once'?'goal-once':'goal-day'}" data-type="monthlyGoals" data-id="${x.id}" ${x.type==='once'&&x.done?'disabled':''}>${x.type==='once'?(x.done?'Выполнено':'Закрыть'):(td?'Сегодня ✓':'Сегодня')}</button>
+        <button class="btn small" data-action="edit" data-type="monthlyGoals" data-id="${x.id}">✏️</button>
+        <button class="btn small" data-action="delete" data-type="monthlyGoals" data-id="${x.id}">🗑️</button>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty">Нет целей на месяц.</div>`;
+
+  const mdone=items.reduce((n,x)=>n+doneCount(x),0),mtotal=items.reduce((n,x)=>n+totalCount(x),0);
+  $('monthlyDone').textContent=mdone;$('monthlyTotal').textContent=mtotal;$('monthlyLeft').textContent=Math.max(0,mtotal-mdone);$('monthlyPct').textContent=(mtotal?Math.round(mdone/mtotal*100):0)+'%';
+  goalChart('monthlyGoalChart',items);
+  const yearly=state.yearlyGoals.map(normalizeItem),ydone=yearly.reduce((n,x)=>n+doneCount(x),0),ytotal=yearly.reduce((n,x)=>n+totalCount(x),0);
+  $('yearlyDone').textContent=ydone;$('yearlyTotal').textContent=ytotal;$('yearlyLeft').textContent=Math.max(0,ytotal-ydone);$('yearlyPct').textContent=(ytotal?Math.round(ydone/ytotal*100):0)+'%';
+  $('yearlyGoalsList').innerHTML=yearly.length?yearly.map(x=>`<div class="item"><div class="item-icon"><div class="icon">${esc(x.icon||'🏆')}</div></div><div class="item-main"><div class="item-title">${esc(x.text)} <span class="goal-type">${x.type==='once'?'1 раз':`${totalCount(x)} дней`}</span></div><div class="item-meta">Прогресс: ${doneCount(x)}/${totalCount(x)}</div></div><div class="item-actions"><button class="btn small" data-action="edit" data-type="yearlyGoals" data-id="${x.id}">✏️</button><button class="btn small" data-action="delete" data-type="yearlyGoals" data-id="${x.id}">🗑️</button></div></div>`).join(''):'<div class="empty">Нет целей на год.</div>';
+  goalChart('yearlyGoalChart',yearly);
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const month=$('goalCalendarMonth').value||monthNow(), [y,m]=month.split('-').map(Number);
+  const first=new Date(y,m-1,1,12), last=new Date(y,m,0,12), offset=(first.getDay()+6)%7, total=last.getDate();
+  const headers=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  let cells=headers.map(h=>`<div class="calendar-weekday">${h}</div>`).join('');
+  for(let i=0;i<offset;i++)cells+='<div class="calendar-day muted"></div>';
+  for(let d=1;d<=total;d++){
+    const date=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`, tasks=state.monthTasks.filter(x=>x.month===month&&activeDates(x).includes(date)), goals=state.monthlyGoals.filter(x=>activeDates(x).includes(date)), all=[...tasks,...goals], done=all.filter(x=>isDoneOn(x,date)).length;
+    cells+=`<div class="calendar-day ${date===today()?'today':''} ${date===calendarSelected?'selected':''}" data-calendar-date="${date}"><div class="calendar-day-number">${d}</div><div class="calendar-day-count">${done}/${all.length}</div><div class="calendar-day-dots">${all.slice(0,7).map(x=>`<span class="calendar-day-dot ${isDoneOn(x,date)?'done':''}"></span>`).join('')}</div></div>`;
+  }
+  $('goalCalendar').innerHTML=cells;
+  renderCalendarSummary();
+}
+let calendarSelected=today();
+function renderCalendarSummary(){
+ const date=calendarSelected, month=$('goalCalendarMonth').value||monthNow();
+ const items=[...state.monthTasks.filter(x=>x.month===month&&activeDates(x).includes(date)),...state.monthlyGoals.filter(x=>activeDates(x).includes(date))];
+ $('calendarDaySummary').innerHTML=`<div class="item"><div class="item-main"><div class="item-title">📌 ${fmtDate(date)}</div><div class="item-meta">${items.length?'Задачи и цели на этот день':'На этот день ничего не запланировано'}</div></div></div>`+
+ (items.map(x=>`<div class="item"><div class="item-icon"><div class="icon">${esc(x.icon||'✓')}</div></div><div class="item-main"><div class="item-title ${isDoneOn(x,date)?'done':''}">${esc(x.text)}</div><div class="item-meta">${isDoneOn(x,date)?'Выполнено':'Запланировано'}</div></div><div class="item-actions"><button class="btn small primary" data-action="calendar-toggle" data-type="${state.monthTasks.includes(x)?'monthTasks':'monthlyGoals'}" data-id="${x.id}" data-date="${date}">${isDoneOn(x,date)?'↩':'✓'}</button></div></div>`).join(''));
+}
+
+function renderFinance(){
+ const inc=state.finances.filter(x=>x.type==='income').reduce((a,x)=>a+Number(x.amount),0),exp=state.finances.filter(x=>x.type==='expense').reduce((a,x)=>a+Number(x.amount),0);
+ $('finIncome').textContent=money(inc);$('finExpense').textContent=money(exp);$('finBalance').textContent=money(inc-exp);$('finCount').textContent=state.finances.length;
+ $('financeTable').innerHTML=state.finances.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${x.type==='income'?'Доход':'Расход'}</td><td>${esc(x.category)}</td><td>${esc(x.comment)}</td><td class="amount ${x.type}">${x.type==='income'?'+':'-'}${money(x.amount)}</td><td><button class="btn small" data-action="delete" data-type="finances" data-id="${x.id}">Удалить</button></td></tr>`).join('') || `<tr><td colspan="6" class="empty">Нет финансовых записей.</td></tr>`;
+}
+function renderDiary(){$('diaryList').innerHTML=state.diary.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="item-main"><div class="item-title">📔 ${esc(x.title||'Запись')} <span class="badge">${fmtDate(x.date)}</span></div><div style="white-space:pre-wrap">${esc(x.text)}</div></div><div class="item-actions"><button class="btn small" data-action="delete" data-type="diary" data-id="${x.id}">Удалить</button></div></div>`).join('')||`<div class="empty">Пока нет записей дневника.</div>`}
+function stars(r){const n=Math.round(Number(r||0)/2);return '★'.repeat(n)+'☆'.repeat(5-n)}
+function renderMedia(){const f=$('mediaFilter').value,items=state.media.filter(x=>f==='all'||x.type===f).slice().sort((a,b)=>b.date.localeCompare(a.date));$('mediaList').innerHTML=items.length?items.map(x=>`<div class="item"><div class="item-main"><div class="item-title">🎬 ${esc(x.title)} <span class="badge">${x.type}</span></div><div class="item-meta">${fmtDate(x.date)} · рейтинг ${Number(x.rating||0).toFixed(1)}/10 <span class="rating">${stars(x.rating)}</span></div><div style="margin-top:8px"><b>Что запомнилось:</b><div style="white-space:pre-wrap">${esc(x.memorable||'—')}</div></div><div style="margin-top:8px"><b>Краткий пересказ:</b><div style="white-space:pre-wrap">${esc(x.summary||'—')}</div></div></div><div class="item-actions"><button class="btn small" data-action="delete" data-type="media" data-id="${x.id}">Удалить</button></div></div>`).join(''):`<div class="empty">Нет записей.</div>`}
+function renderNotes(){$('notesList').innerHTML=state.notes.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="item-main"><div class="item-title">📝 ${esc(x.title||'Заметка')} <span class="badge">${fmtDate(x.date)}</span></div><div style="white-space:pre-wrap">${esc(x.text||'')}</div>${noteVideo(x)}${x.usefulInfo?`<div class="note-grid" style="margin-top:12px"><div><b>Полезная информация</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.usefulInfo)}</div></div><div><b>Ваш конспект / дополнения</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.extra||'')}</div></div></div>`:''}</div><div class="item-actions"><button class="btn small" data-action="delete" data-type="notes" data-id="${x.id}">Удалить</button></div></div>`).join('')||`<div class="empty">Пока нет заметок.</div>`}
+
+function weekStart(date){const d=parseDate(date),day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return iso(d)}
+function allTrackables(){return [...state.monthTasks,...state.monthlyGoals].map(normalizeItem)}
+function achievementStats(){
+ const all=allTrackables(),day=today(),ws=weekStart(day),we=iso(new Date(parseDate(ws).getTime()+6*86400000)),ms=monthNow(),mb=monthBounds(ms);
+ function calc(a,b){const relevant=all.filter(x=>activeDates(x).some(d=>d>=a&&d<=b)||x.type==='once');let total=0,done=0;relevant.forEach(x=>{if(x.type==='once'){total++;done+=x.done?1:0}else{const ds=activeDates(x).filter(d=>d>=a&&d<=b);total+=ds.length;done+=ds.filter(d=>isDoneOn(x,d)).length}});return {total,done,pct:total?Math.round(done/total*100):0,relevant}}
+ return {day:calc(day,day),week:calc(ws,we),month:calc(mb.start,mb.end)}
+}
+function achievementRows(obj){return obj.relevant.map(x=>{const active=activeDates(x),dates=x.type==='once'?[]:active.filter(d=>d>=obj.from&&d<=obj.to),total=x.type==='once'?1:dates.length,done=x.type==='once'?(x.done?1:0):dates.filter(d=>isDoneOn(x,d)).length;return {x,total,done}}).filter(v=>v.total>0).map(v=>`<div class="achievement-row ${v.done===v.total?'done':''}"><span>${esc(v.x.icon||'✓')} ${esc(v.x.text)}</span><b>${v.done}/${v.total}</b></div>`).join('')||'<div class="empty">Нет задач или целей.</div>'}
+function renderAchievements(){
+ const s=achievementStats();
+ [['Day',s.day],['Week',s.week],['Month',s.month]].forEach(([k,v])=>{$('ach'+k).textContent=v.pct+'%';$('ach'+k+'Bar').style.width=v.pct+'%'});
+ const set=(id,v,from,to)=>{$(id).innerHTML=v.relevant.map(x=>{const ds=x.type==='once'?[]:activeDates(x).filter(d=>d>=from&&d<=to),total=x.type==='once'?1:ds.length,done=x.type==='once'?(x.done?1:0):ds.filter(d=>isDoneOn(x,d)).length;return total?`<div class="achievement-row ${done===total?'done':''}"><span>${esc(x.icon||'✓')} ${esc(x.text)}</span><b>${done}/${total}</b></div>`:''}).join('')||'<div class="empty">Нет задач или целей.</div>'};
+ const d=today(),ws=weekStart(d),we=iso(new Date(parseDate(ws).getTime()+6*86400000)),mb=monthBounds(monthNow());
+ set('achievementDayList',s.day,d,d);set('achievementWeekList',s.week,ws,we);set('achievementMonthList',s.month,mb.start,mb.end);
+}
+
+function renderAll(){renderMonthTasks();renderWeekend();renderGoals();renderFinance();renderDiary();renderMedia();renderNotes();renderAchievements();renderMonthTaskPicker();renderGoalPicker()}
+
+function youtubeId(url){
+ try{
+  const u=new URL(url);
+  if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+  if(u.hostname.includes('youtube.com')){
+    if(u.pathname==='/watch') return u.searchParams.get('v');
+    const parts=u.pathname.split('/').filter(Boolean);
+    if(parts[0]==='shorts'||parts[0]==='embed') return parts[1];
+  }
+ }catch(e){}
+ return null;
+}
+async function fetchOembed(url){
+ try{
+   const r=await fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json');
+   if(!r.ok) return null; return await r.json();
+ }catch(e){return null}
+}
+function noteVideo(note){
+ if(!note.youtubeId)return '';
+ const t=note.videoTitle?esc(note.videoTitle):'YouTube видео';
+ const author=note.videoAuthor?`<div class="item-meta">Автор: ${esc(note.videoAuthor)}</div>`:'<div class="item-meta">Метаданные не удалось получить автоматически — ссылка и превью сохранены.</div>';
+ return `<div class="media-card" style="margin-top:10px">
+   <div><a href="${esc(note.url)}" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/${esc(note.youtubeId)}/hqdefault.jpg" alt="Превью YouTube"></a></div>
+   <div><div class="item-title">${t}</div>${author}
+   <div class="footer-note">Ссылка: <a href="${esc(note.url)}" target="_blank" rel="noopener">открыть видео</a></div></div>
+ </div>`;
+}
+function renderNotes(){
+ $('notesList').innerHTML=state.notes.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="item-main">
+ <div class="item-title">${esc(x.title||'Заметка')} <span class="badge">${fmtDate(x.date)}</span></div>
+ <div style="white-space:pre-wrap">${esc(x.text||'')}</div>
+ ${noteVideo(x)}
+ ${x.usefulInfo?`<div class="note-grid" style="margin-top:12px"><div><b>Полезная информация</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.usefulInfo)}</div></div><div><b>Ваш конспект / дополнения</b><div style="white-space:pre-wrap;margin-top:6px">${esc(x.extra||'')}</div></div></div>`:''}
+ </div><div class="item-actions"><button class="btn small" data-action="delete" data-type="notes" data-id="${x.id}">Удалить</button></div></div>`).join('') || `<div class="empty">Пока нет заметок.</div>`;
+}
+
+function renderAll(){renderMonthTasks();renderWeekend();renderGoals();renderFinance();renderDiary();renderMedia();renderNotes()}
+
+$('nav').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('panel-'+b.dataset.tab).classList.add('active')});
+
+function completeMonthTaskDay(id,date=today()){
+ const x=state.monthTasks.find(x=>x.id===id);if(!x)return;
+ if(!Array.isArray(x.completedDays))x.completedDays=[];
+ if(x.completedDays.includes(date))x.completedDays=x.completedDays.filter(v=>v!==date);else x.completedDays.push(date);save();
+}
+function completeGoalDay(type,id,date=today()){
+ const x=state[type].find(x=>x.id===id);if(!x)return;
+ if(!Array.isArray(x.completedDays))x.completedDays=[];
+ if(x.completedDays.includes(date))x.completedDays=x.completedDays.filter(v=>v!==date);else x.completedDays.push(date);save();
+}
+function openEdit(type,id){
+ const x=state[type].find(x=>x.id===id);if(!x)return;
+ window.editing={type,id};$('editModalTitle').textContent=type==='monthTasks'?'Редактировать задачу':'Редактировать цель';
+ $('editText').value=x.text||'';$('editType').value=x.type||'once';$('editIcon').value=x.icon||'✓';
+ $('editStart').value=x.startDate||x.month+'-01'||today();$('editEnd').value=x.endDate||'';
+ editSelected=Array.isArray(x.scheduledDays)?[...x.scheduledDays]:[...activeDates(x)];
+ $('editDayPicker').innerHTML=pickerHtml('edit',editSelected,($('editStart').value||today()).slice(0,7));$('editModal').classList.add('open');
+}
+$('editCancel').onclick=()=>$('editModal').classList.remove('open');
+$('editModal').onclick=e=>{if(e.target.id==='editModal')$('editModal').classList.remove('open')};
+$('editSave').onclick=()=>{
+ const {type,id}=window.editing||{};if(!type)return;const x=state[type].find(x=>x.id===id);if(!x)return;
+ x.text=$('editText').value.trim()||x.text;x.type=$('editType').value;x.icon=$('editIcon').value;
+ x.startDate=$('editStart').value||null;x.endDate=$('editEnd').value||null;
+ if(x.type==='scheduled')x.scheduledDays=[...editSelected];else if(x.type==='daily31'&&!x.endDate)x.endDate=iso(new Date(parseDate(x.startDate||today()).getTime()+30*86400000));
+ if(type==='monthTasks')x.month=(x.startDate||x.month+'-01').slice(0,7);
+ $('editModal').classList.remove('open');save();
+};
+
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-action]');if(!el)return;
+ const a=el.dataset.action;
+ if(a==='delete')remove(el.dataset.type,el.dataset.id);
+ else if(a==='toggle')toggle(el.dataset.type,el.dataset.id);
+ else if(a==='month-day')completeMonthTaskDay(el.dataset.id);
+ else if(a==='goal-day')completeGoalDay(el.dataset.type,el.dataset.id);
+ else if(a==='goal-specific-day')completeGoalDay(el.dataset.type,el.dataset.id,el.dataset.date);
+ else if(a==='calendar-toggle'){ if(el.dataset.type==='monthTasks')completeMonthTaskDay(el.dataset.id,el.dataset.date); else completeGoalDay(el.dataset.type,el.dataset.id,el.dataset.date); }
+ else if(a==='goal-once'){const x=state[el.dataset.type].find(x=>x.id===el.dataset.id);if(x){x.done=true;save()}}
+ else if(a==='edit')openEdit(el.dataset.type,el.dataset.id);
+});
+$('goalCalendar').addEventListener('click',e=>{const d=e.target.closest('[data-calendar-date]')?.dataset.calendarDate;if(!d)return;calendarSelected=d;renderCalendar()});
+
+$('taskMonth').value=monthNow();$('goalCalendarMonth').value=monthNow();$('weekendStart').value=today();$('monthlyGoalStart').value=today();$('monthlyGoalEnd').value=iso(new Date(parseDate(today()).getTime()+30*86400000));$('yearlyGoalStart').value=today();$('finDate').value=today();$('diaryDate').value=today();$('mediaDate').value=today();$('noteDate').value=today();
+
+$('monthTaskType').onchange=renderMonthTaskPicker;
+$('monthTaskDayPicker').onclick=e=>{const b=e.target.closest('[data-picker]');if(!b)return;const d=b.dataset.date,i=newMonthSelected.indexOf(d);if(i>=0)newMonthSelected.splice(i,1);else newMonthSelected.push(d);b.classList.toggle('active',i<0)};
+$('addMonthTask').onclick=()=>{
+ const t=$('monthTaskText').value.trim();if(!t)return;const type=$('monthTaskType').value,month=$('taskMonth').value||monthNow(),start=type==='scheduled'?(newMonthSelected[0]||month+'-01'):month+'-01';
+ state.monthTasks.push({id:uid(),month,text:t,done:false,type,icon:$('monthTaskIcon').value||'✓',startDate:start,endDate:type==='daily31'?iso(new Date(parseDate(start).getTime()+30*86400000)):null,scheduledDays:type==='scheduled'?[...newMonthSelected]:[],completedDays:[]});
+ $('monthTaskText').value='';newMonthSelected=[];save();
+};
+$('taskMonth').onchange=()=>{newMonthSelected=[];renderMonthTasks();renderMonthTaskPicker()};
+$('monthlyGoalType').onchange=renderGoalPicker;
+$('goalCalendarMonth').onchange=()=>{calendarSelected=$('goalCalendarMonth').value+'-01';renderGoalPicker();renderCalendar()};
+$('calendarPrev').onclick=()=>{const [y,m]=$('goalCalendarMonth').value.split('-').map(Number);const d=new Date(y,m-2,1,12);$('goalCalendarMonth').value=iso(d).slice(0,7);calendarSelected=$('goalCalendarMonth').value+'-01';renderGoalPicker();renderCalendar()};
+$('calendarNext').onclick=()=>{const [y,m]=$('goalCalendarMonth').value.split('-').map(Number);const d=new Date(y,m,1,12);$('goalCalendarMonth').value=iso(d).slice(0,7);calendarSelected=$('goalCalendarMonth').value+'-01';renderGoalPicker();renderCalendar()};
+$('monthlyGoalDayPicker').onclick=e=>{const b=e.target.closest('[data-picker]');if(!b)return;const d=b.dataset.date,i=newGoalSelected.indexOf(d);if(i>=0)newGoalSelected.splice(i,1);else newGoalSelected.push(d);b.classList.toggle('active',i<0)};
+$('addWeekend').onclick=()=>{const t=$('weekendTaskText').value.trim();if(!t)return;state.weekend.push({id:uid(),start:$('weekendStart').value||today(),day:Number($('weekendDay').value),text:t,done:false});$('weekendTaskText').value='';save()};
+$('weekendStart').onchange=renderWeekend;
+$('monthlyGoalText').addEventListener('keydown',e=>{if(e.key==='Enter')$('addMonthlyGoal').click()});
+$('yearlyGoalText').addEventListener('keydown',e=>{if(e.key==='Enter')$('addYearlyGoal').click()});
+$('addMonthlyGoal').onclick=()=>{
+ const t=$('monthlyGoalText').value.trim();if(!t)return;const type=$('monthlyGoalType').value,start=$('monthlyGoalStart').value||today(),end=$('monthlyGoalEnd').value||start;
+ state.monthlyGoals.push({id:uid(),text:t,done:false,type,icon:$('monthlyGoalIcon').value||'🎯',startDate:start,endDate:type==='once'?null:end,scheduledDays:type==='scheduled'?[...newGoalSelected]:[],completedDays:[]});
+ $('monthlyGoalText').value='';newGoalSelected=[];save();
+};
+$('addYearlyGoal').onclick=()=>{const t=$('yearlyGoalText').value.trim();if(!t)return;const type=$('yearlyGoalType').value,start=$('yearlyGoalStart').value||today();state.yearlyGoals.push({id:uid(),text:t,done:false,type,icon:'🏆',startDate:type==='once'?null:start,endDate:type==='daily31'?iso(new Date(parseDate(start).getTime()+30*86400000)):null,completedDays:[]});$('yearlyGoalText').value='';save()};
+$('addFinance').onclick=()=>{const amount=Number($('finAmount').value);if(!amount)return;state.finances.push({id:uid(),date:$('finDate').value||today(),type:$('finType').value,amount,category:$('finCategory').value.trim(),comment:$('finComment').value.trim()});$('finAmount').value='';$('finCategory').value='';$('finComment').value='';save()};
+$('addDiary').onclick=()=>{const text=$('diaryText').value.trim();if(!text)return;state.diary.push({id:uid(),date:$('diaryDate').value||today(),title:$('diaryTitle').value.trim(),text});$('diaryTitle').value='';$('diaryText').value='';save()};
+$('addMedia').onclick=()=>{const title=$('mediaTitle').value.trim();if(!title)return;state.media.push({id:uid(),title,type:$('mediaType').value,rating:Number($('mediaRating').value||0),date:$('mediaDate').value||today(),memorable:$('mediaMemorable').value.trim(),summary:$('mediaSummary').value.trim()});['mediaTitle','mediaRating','mediaMemorable','mediaSummary'].forEach(id=>$(id).value='');save()};
+$('mediaFilter').onchange=renderMedia;
+
+$('exportBtn').onclick=()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='личный-трекер-backup.json';a.click();URL.revokeObjectURL(a.href)
+};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{const imported=JSON.parse(await f.text()); Object.assign(state,imported);save();alert('Данные импортированы.');}catch(err){alert('Не удалось импортировать JSON.')}
+ e.target.value='';
+};
+$('resetBtn').onclick=()=>{if(confirm('Удалить все данные трекера? Это действие нельзя отменить.')){Object.keys(state).forEach(k=>state[k]=[]);save()}};
+renderAll();
+$('editDayPicker').onclick=e=>{const b=e.target.closest('[data-picker]');if(!b)return;const d=b.dataset.date,i=editSelected.indexOf(d);if(i>=0)editSelected.splice(i,1);else editSelected.push(d);b.classList.toggle('active',i<0)};
+</script>
+
+
+<deepl-input-controller translate="no"><template shadowrootmode="open"><link rel="stylesheet" href="chrome-extension://cofdbpoegempjloogbagkncekinflcnj/build/content.css"><div dir="ltr" data-dl-surface="inputTranslator" data-dl-impl="svelte" style="visibility: initial !important;"><div class="dl-input-translation-container svelte-95aucy"><div></div></div></div></template></deepl-input-controller></body></html>
