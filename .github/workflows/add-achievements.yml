@@ -1,0 +1,114 @@
+name: Add achievements
+on:
+  push:
+    paths:
+      - '.github/workflows/add-achievements.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch tracker
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p=Path('Личный_трекер_EXILE_редизайн (1).html')
+          s=p.read_text()
+          css='''
+          .achievement-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
+          .achievement-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+          .achievement-filter{border:1px solid var(--line);background:var(--panel-2);color:var(--muted);padding:7px 10px;border-radius:8px;font-size:11px;font-weight:750}
+          .achievement-filter.active{color:var(--purple-2);border-color:rgba(124,77,255,.55);background:rgba(124,77,255,.1)}
+          .achievement-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+          .achievement-card{position:relative;border:1px solid var(--line-soft);border-radius:11px;padding:13px;background:var(--bg-2);overflow:hidden}
+          .achievement-card.unlocked{border-color:rgba(35,214,155,.45);box-shadow:0 0 0 1px rgba(35,214,155,.06) inset}
+          .achievement-card.unlocked::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green)}
+          .achievement-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:var(--panel-3);border:1px solid var(--line);margin-bottom:9px;filter:grayscale(1);opacity:.7}
+          .achievement-card.unlocked .achievement-icon{filter:none;opacity:1;background:rgba(35,214,155,.1);border-color:rgba(35,214,155,.35)}
+          .achievement-title{font-weight:850;margin-bottom:3px}
+          .achievement-description{font-size:11px;color:var(--muted);min-height:32px}
+          .achievement-progress{margin-top:10px}
+          .achievement-progress-row{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);margin-bottom:5px}
+          .achievement-progress-row b{color:var(--text)}
+          .achievement-status{margin-top:9px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+          .achievement-card.unlocked .achievement-status{color:var(--green)}
+          .achievement-unlocked-date{font-size:10px;color:var(--muted);margin-top:3px}
+          @media(max-width:1000px){.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+          @media(max-width:700px){.achievement-grid{grid-template-columns:1fr}.achievement-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+          '''
+          s=s.replace('.media-card{display:grid;',css+'\n.media-card{display:grid;',1)
+          s=s.replace('      <button class="tab" data-tab="notes">Заметки + YouTube</button>','      <button class="tab" data-tab="notes">Заметки + YouTube</button>\n      <button class="tab" data-tab="achievements">Достижения</button>',1)
+          panel='''
+              <section class="tab-panel" id="panel-achievements">
+                <div class="grid">
+                  <div class="card">
+                    <h2>Достижения</h2>
+                    <div class="achievement-summary">
+                      <div class="stat"><span>Получено</span><b id="achUnlocked">0</b></div><div class="stat"><span>Всего</span><b id="achTotal">0</b></div><div class="stat"><span>Процент</span><b id="achPct">0%</b></div><div class="stat"><span>Очки</span><b id="achPoints">0</b></div>
+                    </div>
+                    <div class="progress"><div id="achBar" style="width:0%"></div></div>
+                    <p class="footer-note">Достижения рассчитываются автоматически из существующих данных. Полученные достижения и дата открытия сохраняются в JSON-экспорте.</p>
+                  </div>
+                  <div class="card">
+                    <div class="toolbar"><input class="input" id="achievementSearch" placeholder="Поиск достижений..."><div class="achievement-filters" id="achievementFilters"><button class="achievement-filter active" data-ach-filter="all">Все</button><button class="achievement-filter" data-ach-filter="locked">Не получены</button><button class="achievement-filter" data-ach-filter="unlocked">Получены</button></div></div>
+                    <div id="achievementsList" class="achievement-grid"></div>
+                  </div>
+                </div>
+              </section>
+          '''
+          s=s.replace('    </section>\n  </main>\n</div>\n\n<script>','    </section>\n'+panel+'  </main>\n</div>\n\n<script>',1)
+          old='''const state = JSON.parse(localStorage.getItem(KEY) || JSON.stringify({
+  monthTasks:[], weekend:[], monthlyGoals:[], yearlyGoals:[], finances:[], diary:[], media:[], notes:[]
+}));'''
+          new='''const state = JSON.parse(localStorage.getItem(KEY) || JSON.stringify({
+  monthTasks:[], weekend:[], monthlyGoals:[], yearlyGoals:[], finances:[], diary:[], media:[], notes:[], achievements:{}
+}));
+if(!state.achievements || typeof state.achievements!==\'object\' || Array.isArray(state.achievements)) state.achievements={};'''
+          s=s.replace(old,new,1)
+          ach='''
+const ACHIEVEMENTS=[
+{id:'first-step',icon:'◆',title:'Первый шаг',description:'Выполни любую задачу или цель.',points:10,target:1,metric:()=>completedActions()},
+{id:'taskmaster',icon:'✓',title:'Организатор',description:'Выполни 10 обычных задач.',points:20,target:10,metric:()=>completedRegularTasks()},
+{id:'daily-rhythm',icon:'31',title:'Месячный ритм',description:'Отметь 7 уникальных дней в задачах на 31 день.',points:25,target:7,metric:()=>uniqueCompletedDays()},
+{id:'goal-setter',icon:'◎',title:'Целеустремлённый',description:'Закрой 5 целей месяца или года.',points:25,target:5,metric:()=>completedGoals()},
+{id:'weekend-warrior',icon:'3D',title:'Выходной без хаоса',description:'Выполни 6 задач из планов на выходные.',points:20,target:6,metric:()=>completedWeekendTasks()},
+{id:'finance-keeper',icon:'₽',title:'Финансист',description:'Занеси 10 финансовых операций.',points:20,target:10,metric:()=>state.finances.length},
+{id:'chronicler',icon:'✎',title:'Летописец',description:'Создай 10 записей дневника.',points:20,target:10,metric:()=>state.diary.length},
+{id:'cinephile',icon:'★',title:'Киноман',description:'Добавь 10 фильмов или сериалов.',points:20,target:10,metric:()=>state.media.length},
+{id:'archivist',icon:'▤',title:'Архивариус',description:'Создай 10 заметок.',points:20,target:10,metric:()=>state.notes.length},
+{id:'all-rounder',icon:'◈',title:'Универсал',description:'Используй все основные разделы трекера хотя бы по одному разу.',points:50,target:8,metric:()=>usedSectionsCount()},
+{id:'century',icon:'100',title:'Сотня',description:'Набери 100 выполненных действий.',points:75,target:100,metric:()=>completedActions()},
+{id:'completionist',icon:'✦',title:'Завершитель',description:'Получи все остальные достижения.',points:100,target:11,metric:()=>unlockedAchievementCount()}
+];
+function completedRegularTasks(){return state.monthTasks.filter(x=>x.type!=='daily31'&&x.done).length}
+function uniqueCompletedDays(){const set=new Set();[...state.monthTasks,...state.monthlyGoals,...state.yearlyGoals].forEach(x=>(Array.isArray(x.completedDays)?x.completedDays:[]).forEach(d=>set.add(d)));return set.size}
+function completedGoals(){return state.monthlyGoals.filter(x=>x.type==='daily31'?goalDoneUnits(x)>=31:x.done).length+state.yearlyGoals.filter(x=>x.type==='daily31'?goalDoneUnits(x)>=31:x.done).length}
+function completedWeekendTasks(){return state.weekend.filter(x=>x.done).length}
+function completedActions(){return completedRegularTasks()+completedWeekendTasks()+completedGoals()+state.monthTasks.filter(x=>x.type==='daily31').reduce((n,x)=>n+(Array.isArray(x.completedDays)?x.completedDays.length:0),0)+state.monthlyGoals.filter(x=>x.type==='daily31').reduce((n,x)=>n+(Array.isArray(x.completedDays)?x.completedDays.length:0),0)+state.yearlyGoals.filter(x=>x.type==='daily31').reduce((n,x)=>n+(Array.isArray(x.completedDays)?x.completedDays.length:0),0)}
+function usedSectionsCount(){return [state.monthTasks.length,state.weekend.length,state.monthlyGoals.length,state.yearlyGoals.length,state.finances.length,state.diary.length,state.media.length,state.notes.length].filter(Boolean).length}
+function unlockedAchievementCount(){return ACHIEVEMENTS.filter(a=>state.achievements[a.id]?.unlocked).length}
+function syncAchievements(){let changed=false;ACHIEVEMENTS.forEach(a=>{const value=Math.max(0,Number(a.metric()||0)),old=state.achievements[a.id]||{},unlocked=!!old.unlocked||value>=a.target;if(unlocked&&!old.unlocked){state.achievements[a.id]={...old,value,unlocked:true,unlockedAt:new Date().toISOString()};changed=true}else if(old.value!==value){state.achievements[a.id]={...old,value,unlocked:!!old.unlocked,unlockedAt:old.unlockedAt||null};changed=true}});return changed}
+function renderAchievements(){const changed=syncAchievements();if(changed)localStorage.setItem(KEY,JSON.stringify(state));const unlocked=unlockedAchievementCount(),total=ACHIEVEMENTS.length,points=ACHIEVEMENTS.reduce((n,a)=>n+(state.achievements[a.id]?.unlocked?a.points:0),0),pct=Math.round(unlocked/total*100);$('achUnlocked').textContent=unlocked;$('achTotal').textContent=total;$('achPct').textContent=pct+'%';$('achPoints').textContent=points;$('achBar').style.width=pct+'%';const q=($('achievementSearch')?.value||'').trim().toLowerCase(),filter=document.querySelector('.achievement-filter.active')?.dataset.achFilter||'all';const items=ACHIEVEMENTS.filter(a=>{const r=state.achievements[a.id]||{};return !(filter==='locked'&&r.unlocked)&&!(filter==='unlocked'&&!r.unlocked)&&(!q||[a.title,a.description].join(' ').toLowerCase().includes(q))});$('achievementsList').innerHTML=items.map(a=>{const r=state.achievements[a.id]||{},v=Math.min(a.target,Math.max(0,Number(a.metric()||r.value||0))),done=!!r.unlocked,pr=Math.round(v/a.target*100);return `<div class="achievement-card ${done?'unlocked':''}"><div class="achievement-icon">${a.icon}</div><div class="achievement-title">${esc(a.title)}</div><div class="achievement-description">${esc(a.description)}</div><div class="achievement-progress"><div class="achievement-progress-row"><span>Прогресс</span><b>${v}/${a.target}</b></div><div class="progress"><div style="width:${done?100:pr}%"></div></div></div><div class="achievement-status">${done?'Получено':'В процессе'} · ${a.points} очк.</div>${done&&r.unlockedAt?`<div class="achievement-unlocked-date">Открыто: ${new Date(r.unlockedAt).toLocaleDateString('ru-RU')}</div>`:''}</div>`}).join('')||'<div class="empty" style="grid-column:1/-1">По выбранному фильтру достижений нет.</div>'}
+'''
+          s=s.replace('function renderAll(){',ach+'\nfunction renderAll(){',1)
+          s=s.replace('function renderAll(){renderMonthTasks();renderWeekend();renderGoals();renderFinance();renderDiary();renderMedia();renderNotes()}','function renderAll(){renderMonthTasks();renderWeekend();renderGoals();renderFinance();renderDiary();renderMedia();renderNotes();renderAchievements()}',1)
+          s=s.replace('function save(){localStorage.setItem(KEY,JSON.stringify(state)); renderAll();}','function save(){syncAchievements();localStorage.setItem(KEY,JSON.stringify(state)); renderAll();}',1)
+          s=s.replace("$('taskMonth').value=monthNow();","document.addEventListener('input',e=>{if(e.target.id==='achievementSearch')renderAchievements()});\n$('achievementFilters').addEventListener('click',e=>{const b=e.target.closest('[data-ach-filter]');if(!b)return;document.querySelectorAll('.achievement-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderAchievements()});\n$('taskMonth').value=monthNow();",1)
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'feat: add achievements tab' || true
+          git push
+      - name: Remove temporary workflow
+        if: always()
+        run: |
+          rm -f .github/workflows/add-achievements.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: remove temporary update workflow' || true
+          git push || true
