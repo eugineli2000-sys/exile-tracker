@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   patch:
-    if: github.event.head_commit.message != 'feat: add achievements tab'
+    if: ${{ github.event.head_commit.message != 'feat: add achievements tab' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
